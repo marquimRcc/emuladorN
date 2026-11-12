@@ -109,12 +109,14 @@ def main():
         appdata = Path(os.environ.get("APPDATA", home / "AppData" / "Roaming"))
         target_load_dirs = [
             appdata / "eden" / "load",
-            appdata / "eglantine" / "load"
+            appdata / "eglantine" / "load",
+            appdata / "lichii" / "load"
         ]
     else:
         target_load_dirs = [
             home / ".local/share/eden/load",
-            home / ".local/share/eglantine/load"
+            home / ".local/share/eglantine/load",
+            home / ".local/share/lichii/load"
         ]
     
     print("=" * 60)
