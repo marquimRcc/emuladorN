@@ -2,7 +2,9 @@
 set -e
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ -f "$DIR/eglantine.AppImage" ]; then
+if [ -f "$DIR/eglantine-daily-20261112-pgo.AppImage" ]; then
+    EMU="$DIR/eglantine-daily-20261112-pgo.AppImage"
+elif [ -f "$DIR/eglantine.AppImage" ]; then
     EMU="$DIR/eglantine.AppImage"
 elif [ -f "$DIR/lichii-v160-pgo.AppImage" ]; then
     EMU="$DIR/lichii-v160-pgo.AppImage"
