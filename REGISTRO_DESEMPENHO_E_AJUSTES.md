@@ -3,45 +3,64 @@
 **Title ID:** `0400486024DEC000` | **Build ID (main):** `E0F3CCFAF50065AE4EA01EB5AEB13B1A45DA3348`  
 **Emulador Principal:** Eglantine v0.1.0-rc3 PGO (`eglantine.AppImage`)  
 **Ambiente:** Linux (Regata OS), Vulkan RADV (AMD Radeon RX 6700 XT)  
-**Última Atualização:** 12/11/2026 (Diagnóstico e Correção de Fluidez)  
+**Última Atualização:** 12/11/2026  
 
 ---
 
-## 1. Causa Raiz da Fluidez "Travada" nos Últimos Testes
+## 1. Diagnóstico do Regresso Visual (Rosto Preto e 10 FPS a 0.5x)
 
-Ao analisar minuciosamente os logs de execução de 12/11 às 19:30, foi identificada a causa exata pela qual o jogo continuava travando:
+Ao analisar a imagem fornecida pelo usuário, foram identificadas 3 regressões decorrentes de índices de enum incorretos na última alteração do INI:
 
-1. **O script estava executando o Lichii (`lichii-v160-pgo.AppImage`)**:
-   - No commit `53cdd01`, o launcher `jogar_zelda.sh` havia sido configurado para priorizar o Lichii v160 caso o arquivo existisse.
-   - O usuário estava, sem perceber, testando o Lichii e não o Eglantine.
-2. **Engasgo Grave do Lichii v160 no Vulkan**:
-   - O log do Lichii registrou: `1400.0 ms of draws held for unbuilt pipelines` (1,4 segundo de congelamento de tela a cada 10 segundos).
-   - O recurso novo do Lichii `native_async_draws: Wait` e `native_pipeline_wait_ms: 8` congela a renderização para sincronizar draws.
-   - O Lichii também tentou aplicar seus próprios patches embutidos de Dynamic FPS e entrou em conflito com os patches do usuário (`Skipping FPS Unlock: already patched`).
-3. **Onde a fluidez sempre funcionou com perfeição**:
-   - Foi no **Eglantine v0.1.0-rc3 PGO (`eglantine.AppImage`)**.
-
----
-
-## 2. Ações Tomadas para Restauração Total da Fluidez
-
-1. **Reversão do Launcher para o Eglantine**:
-   - [`jogar_zelda.sh`](./jogar_zelda.sh) agora prioriza `eglantine.AppImage` como emulador principal.
-2. **Perfil Gráfico Perfeito (`config/0400486024DEC000.ini`)**:
-   - **Zero Clarões**: `gpu_accuracy=1` (High) + `fix_bloom_effects=true`.
-   - **Zero Micro-travamentos**: `use_asynchronous_shaders=true` (compilação assíncrona).
-   - **Suavidade Contínua**: `use_vsync=3` (`FifoRelaxed`).
-   - **Renderização Nativa e Memória Leve**:
-     - `resolution_setup=1` (`Res1X` nativo direto para a swapchain).
-     - `vram_usage_mode=1` (`Conservative`).
-     - `astc_recompression=1` (`Bc3` para placas AMD).
-     - `use_reactive_flushing=true`.
-3. **Bloqueio do Popup Destrutivo**:
-   - O auto-confirmador do `jogar_zelda.sh` envia `Escape` para o popup "Recommended settings", impedindo que o Eglantine rebaixe a precisão da GPU para `Low` em tempo de execução.
+1. **Rosto do Link Preto e Texturas Corrompidas**:
+   - `astc_recompression=1` mapeou para **`Bc1` (DXT1)**. O formato BC1 não suporta canal alpha gradativo (possui apenas 1 bit de alpha). Como o mapa facial do Link e detalhes de madeira usam transparência alfa no ASTC, o formato BC1 destruiu a textura e transformou o rosto em um bloco preto.
+   - **Correção**: `astc_recompression=0` (**Uncompressed / Best Quality**). A GPU AMD RX 6700 XT decodifica o ASTC nativamente via Compute Shaders com 100% de fidelidade visual.
+2. **Resolução em 0.5x (`Scale: 0.5x`)**:
+   - `resolution_setup=1` mapeou para `Res1_2X` (metade da resolução nativa).
+   - **Correção**: `resolution_setup=2` (**`Res1X`** = 1.0x nativo).
+3. **Queda para 10 FPS e Stuttering de VRAM**:
+   - `vram_usage_mode=1` mapeou para `Aggressive`, forçando descarte contínuo de texturas do cache da GPU e gerando 93ms por quadro.
+   - **Correção**: `vram_usage_mode=0` (**`Conservative`**).
 
 ---
 
-## 3. Como Jogar
+## 2. Configuração Final Consolidada (`config/0400486024DEC000.ini`)
 
-Execute diretamente o atalho na Área de Trabalho:
-- [`Zelda: Ocarina of Time (Switch 2)`](file:///home/marcos/Área%20de%20trabalho/Zelda_Ocarina_of_Time.desktop) (chama `jogar_zelda.sh`).
+```ini
+[Renderer]
+# 1. Resolução e Qualidade Visual Perfeitas
+resolution_setup\use_global=false
+resolution_setup\default=false
+resolution_setup=2                  # Res1X (1.0x Nativo)
+
+astc_recompression\use_global=false
+astc_recompression\default=false
+astc_recompression=0                # Uncompressed (Texturas e Rosto 100% fiéis)
+
+vram_usage_mode\use_global=false
+vram_usage_mode\default=false
+vram_usage_mode=0                   # Conservative (Sem descarte de texturas)
+
+# 2. Fluidez Total e Cadência Suave
+use_asynchronous_shaders\use_global=false
+use_asynchronous_shaders\default=false
+use_asynchronous_shaders=true       # Shaders assíncronos
+
+use_vsync\use_global=false
+use_vsync\default=false
+use_vsync=3                         # FifoRelaxed
+
+# 3. Eliminação dos Clarões
+gpu_accuracy\use_global=false
+gpu_accuracy\default=false
+gpu_accuracy=1                      # High (impede overflow de bloom)
+
+fix_bloom_effects\use_global=false
+fix_bloom_effects\default=false
+fix_bloom_effects=true
+```
+
+---
+
+## 3. Launcher
+
+- Launcher [`jogar_zelda.sh`](./jogar_zelda.sh) configurado para rodar `eglantine.AppImage` com auto-rejeição do popup de configurações recomendado (fecha via `Escape`).
