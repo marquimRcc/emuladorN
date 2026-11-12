@@ -42,8 +42,10 @@ $SettingsToApply = @{
     "region_index\default" = "false"
     "use_docked_mode" = "1"
     "use_docked_mode\default" = "false"
-    "gpu_accuracy" = "0"
+    "gpu_accuracy" = "1"
     "gpu_accuracy\default" = "false"
+    "fix_bloom_effects" = "true"
+    "fix_bloom_effects\default" = "false"
     "scaling_filter" = "1"
     "scaling_filter\default" = "false"
     "frame_gen" = "false"
@@ -82,7 +84,33 @@ if (Test-Path $ConfigFile) {
     Set-Content -Path $ConfigFile -Value $NewLines
 }
 
-# 3. Criação do inicializador rápido .bat
+# 3. Aplicar perfil customizado específico do jogo (Bloom fix + High GPU accuracy)
+$CustomIni = "$EmuladorDir\config\0400486024DEC000.ini"
+if (Test-Path $CustomIni) {
+    Write-Host "[4/5] Copiando perfil gráfico do jogo..." -ForegroundColor Yellow
+    foreach ($App in @("eglantine", "eden")) {
+        $CustomTargetDir = "$env:APPDATA\$App\custom"
+        if (!(Test-Path $CustomTargetDir)) {
+            New-Item -ItemType Directory -Path $CustomTargetDir -Force | Out-Null
+        }
+        Copy-Item -Path $CustomIni -Destination "$CustomTargetDir\0400486024DEC000.ini" -Force
+    }
+}
+
+# 4. Instalação dos patches da comunidade (Dynamic FPS + Max Resolution)
+$PatchScript = "$EmuladorDir\instalar_patches.py"
+if (Test-Path $PatchScript) {
+    Write-Host "[5/5] Instalando patches da comunidade (60 FPS e Resolução Máxima)..." -ForegroundColor Yellow
+    if (Get-Command python -ErrorAction SilentlyContinue) {
+        python "$PatchScript"
+    } elseif (Get-Command py -ErrorAction SilentlyContinue) {
+        py "$PatchScript"
+    } else {
+        Write-Host "Aviso: Python não detectado no PATH do Windows. Execute 'python instalar_patches.py' manualmente após instalar o Python." -ForegroundColor Yellow
+    }
+}
+
+# 5. Criação do inicializador rápido .bat
 $BatFile = "$EmuladorDir\jogar_zelda.bat"
 $BatContent = @"
 @echo off
@@ -107,5 +135,5 @@ start "" "%EMU%" -g "%GAME%"
 "@
 
 Set-Content -Path $BatFile -Value $BatContent -Encoding ASCII
-Write-Host "[4/4] Inicializador criado em: $BatFile" -ForegroundColor Green
+Write-Host "Inicializador criado em: $BatFile" -ForegroundColor Green
 Write-Host "=== Concluído! Tudo pronto para jogar no Windows ===" -ForegroundColor Cyan

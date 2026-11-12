@@ -40,14 +40,15 @@ Scripts de automação, patches de desempenho (60 FPS), configurações gráfica
 - Coloque a sua ROM do jogo (ex.: `The Legend of Zelda Ocarina of TIme [04004860224DEC000].nup`).
 
 ### 2. Configuração Gráfica
-Copie o arquivo de configuração para o diretório do emulador:
+Copie o arquivo de configuração para os diretórios do emulador (o script `jogar_zelda.sh` também faz isso automaticamente):
 ```bash
-mkdir -p ~/.config/eglantine/custom/
+mkdir -p ~/.config/eglantine/custom/ ~/.config/eden/custom/
 cp config/0400486024DEC000.ini ~/.config/eglantine/custom/
+cp config/0400486024DEC000.ini ~/.config/eden/custom/
 ```
 
-### 3. Aplicar Patches de 60 FPS
-O script `instalar_patches.py` aplica os ganchos de código em memória para desativar o limitador nativo de 20 FPS da Nintendo e impedir a queda de resolução dinâmica (DRS):
+### 3. Aplicar Patches de 60 FPS e Resolução Máxima
+O script `instalar_patches.py` gera e injeta os arquivos binários IPS32 necessários para desativar o limitador nativo de 20 FPS e impedir a queda de resolução dinâmica (DRS). Compatível com Linux e Windows:
 ```bash
 python3 instalar_patches.py
 ```

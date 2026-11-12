@@ -20,6 +20,7 @@ Patches incluídos:
 """
 
 from pathlib import Path
+import os
 import struct
 import sys
 
@@ -104,10 +105,17 @@ def install_patch(target_dirs, mod_name, records):
 
 def main():
     home = Path.home()
-    target_load_dirs = [
-        home / ".local/share/eden/load",
-        home / ".local/share/eglantine/load"
-    ]
+    if sys.platform == "win32":
+        appdata = Path(os.environ.get("APPDATA", home / "AppData" / "Roaming"))
+        target_load_dirs = [
+            appdata / "eden" / "load",
+            appdata / "eglantine" / "load"
+        ]
+    else:
+        target_load_dirs = [
+            home / ".local/share/eden/load",
+            home / ".local/share/eglantine/load"
+        ]
     
     print("=" * 60)
     print("Instalando Patches da Comunidade para:")

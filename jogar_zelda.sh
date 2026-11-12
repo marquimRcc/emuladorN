@@ -26,6 +26,13 @@ if [ ! -f "$GAME" ]; then
     exit 1
 fi
 
+# Sincroniza perfil gráfico otimizado (Bloom fix + High GPU accuracy)
+if [ -f "$DIR/config/0400486024DEC000.ini" ]; then
+    mkdir -p "$HOME/.config/eglantine/custom" "$HOME/.config/eden/custom"
+    cp -u "$DIR/config/0400486024DEC000.ini" "$HOME/.config/eglantine/custom/0400486024DEC000.ini" 2>/dev/null || cp "$DIR/config/0400486024DEC000.ini" "$HOME/.config/eglantine/custom/"
+    cp -u "$DIR/config/0400486024DEC000.ini" "$HOME/.config/eden/custom/0400486024DEC000.ini" 2>/dev/null || cp "$DIR/config/0400486024DEC000.ini" "$HOME/.config/eden/custom/"
+fi
+
 chmod +x "$EMU"
 echo "Iniciando The Legend of Zelda: Ocarina of Time com auto-confirmação das configurações recomendadas..."
 
