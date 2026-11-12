@@ -1,67 +1,47 @@
 # Registro Técnico: Desempenho, Patches e Ajustes Gráficos
 **Jogo:** The Legend of Zelda: Ocarina of Time (Nintendo Switch 2 / Remake)  
 **Title ID:** `0400486024DEC000` | **Build ID (main):** `E0F3CCFAF50065AE4EA01EB5AEB13B1A45DA3348`  
-**Emuladores:** Eglantine v0.1.0-rc3 PGO / Lichii build 160 PGO  
+**Emulador Principal:** Eglantine v0.1.0-rc3 PGO (`eglantine.AppImage`)  
 **Ambiente:** Linux (Regata OS), Vulkan RADV (AMD Radeon RX 6700 XT)  
-**Última Atualização:** 12/11/2026  
+**Última Atualização:** 12/11/2026 (Diagnóstico e Correção de Fluidez)  
 
 ---
 
-## 1. Fatos Confirmados (Evidências em Teste Real)
+## 1. Causa Raiz da Fluidez "Travada" nos Últimos Testes
 
-1. **Clarões Eliminados com Sucesso (12/11/2026)**:
-   - O usuário testou e confirmou: **os clarões e flashes brancos sumiram completamente**.
-   - Causa real dos clarões: O popup de configurações recomendadas ou a flag `gpu_accuracy\default=true` forçava `gpu_accuracy=0` (Low). Em precisão Low (FP16), buffers de HDR e Bloom estouravam para $+\infty$, cobrindo a tela de branco ofuscante.
-   - Solução definitiva: `gpu_accuracy=1` (High), `fix_bloom_effects=true` e bloqueio de popups que rebaixavam a precisão.
+Ao analisar minuciosamente os logs de execução de 12/11 às 19:30, foi identificada a causa exata pela qual o jogo continuava travando:
 
-2. **Como a Fluidez foi Originalmente Resolvida**:
-   - **Patch IPS32 `FPS_Unlock`**: Gancho dinâmico no motor (`main + 0x6E6CC4`) desviando para rotina de interpolação em `main + 0x3C46200`. Acoplado ao timer nativo ARM64 (`cntpct_el0` / `cntfrq_el0`), desvinculou o jogo da trava rígida de 20 FPS da Nintendo, permitindo framerates fluidos e dinâmicos (10 a 120 FPS).
-   - **Compilação Assíncrona de Shaders (`use_asynchronous_shaders: true`)**: Permitiu que novos pipelines gráficos Vulkan fossem gerados em segundo plano, sem pausar a thread principal de renderização.
-   - **Apresentação de Quadros Relaxada (`use_vsync: FifoRelaxed` / modo 3)**: Eliminou o efeito de queda súbita para 30 FPS (*double buffer lock*) caso um quadro atrase frações de milissegundo.
-
----
-
-## 2. Diagnóstico: Por que a Fluidez Tinha Sumido no Último Teste?
-
-Durante a tentativa anterior de corrigir os clarões (commit `0b6d27c`), duas configurações afetaram diretamente a cadência de quadros:
-
-1. **Desativação dos Shaders Assíncronos (`use_asynchronous_shaders: false`)**:
-   - Ao forçar a compilação síncrona, a thread de renderização da GPU passa a congelar (*hitch / micro-stutter*) toda vez que encontra um novo shader, textura ou efeito que ainda não estava gravado em cache.
-2. **VSync Travado em `Fifo` Rígido (modo 2)**:
-   - Com `use_vsync\use_global=true`, o emulador operava no modo VSync tradicional (FIFO estrito a 60 Hz). Como o emulador oscila de acordo com a carga da cena, o VSync estrito gera solavancos perceptíveis (*judder*).
+1. **O script estava executando o Lichii (`lichii-v160-pgo.AppImage`)**:
+   - No commit `53cdd01`, o launcher `jogar_zelda.sh` havia sido configurado para priorizar o Lichii v160 caso o arquivo existisse.
+   - O usuário estava, sem perceber, testando o Lichii e não o Eglantine.
+2. **Engasgo Grave do Lichii v160 no Vulkan**:
+   - O log do Lichii registrou: `1400.0 ms of draws held for unbuilt pipelines` (1,4 segundo de congelamento de tela a cada 10 segundos).
+   - O recurso novo do Lichii `native_async_draws: Wait` e `native_pipeline_wait_ms: 8` congela a renderização para sincronizar draws.
+   - O Lichii também tentou aplicar seus próprios patches embutidos de Dynamic FPS e entrou em conflito com os patches do usuário (`Skipping FPS Unlock: already patched`).
+3. **Onde a fluidez sempre funcionou com perfeição**:
+   - Foi no **Eglantine v0.1.0-rc3 PGO (`eglantine.AppImage`)**.
 
 ---
 
-## 3. Solução Unificada: Fluidez Máxima + Zero Clarões
+## 2. Ações Tomadas para Restauração Total da Fluidez
 
-Os clarões eram causados unicamente pelo estouro matemático de precisão (`gpu_accuracy: Low`), e **não** pela compilação assíncrona em si quando a precisão está alta.
-
-Portanto, o perfil otimizado em `config/0400486024DEC000.ini` reúne:
-
-```ini
-[Renderer]
-# 1. Impede qualquer clarão ou estouro de bloom (Alta precisão matemática)
-gpu_accuracy\use_global=false
-gpu_accuracy\default=false
-gpu_accuracy=1
-fix_bloom_effects\use_global=false
-fix_bloom_effects\default=false
-fix_bloom_effects=true
-
-# 2. Restaura a fluidez total sem micro-travamentos (Compilação assíncrona)
-use_asynchronous_shaders\use_global=false
-use_asynchronous_shaders\default=false
-use_asynchronous_shaders=true
-
-# 3. Elimina engasgos de double-buffering e solavancos de quadros (VSync Relaxado)
-use_vsync\use_global=false
-use_vsync\default=false
-use_vsync=3
-```
+1. **Reversão do Launcher para o Eglantine**:
+   - [`jogar_zelda.sh`](./jogar_zelda.sh) agora prioriza `eglantine.AppImage` como emulador principal.
+2. **Perfil Gráfico Perfeito (`config/0400486024DEC000.ini`)**:
+   - **Zero Clarões**: `gpu_accuracy=1` (High) + `fix_bloom_effects=true`.
+   - **Zero Micro-travamentos**: `use_asynchronous_shaders=true` (compilação assíncrona).
+   - **Suavidade Contínua**: `use_vsync=3` (`FifoRelaxed`).
+   - **Renderização Nativa e Memória Leve**:
+     - `resolution_setup=1` (`Res1X` nativo direto para a swapchain).
+     - `vram_usage_mode=1` (`Conservative`).
+     - `astc_recompression=1` (`Bc3` para placas AMD).
+     - `use_reactive_flushing=true`.
+3. **Bloqueio do Popup Destrutivo**:
+   - O auto-confirmador do `jogar_zelda.sh` envia `Escape` para o popup "Recommended settings", impedindo que o Eglantine rebaixe a precisão da GPU para `Low` em tempo de execução.
 
 ---
 
-## 4. Inicialização e Atalho
+## 3. Como Jogar
 
-- **Atalho da Área de Trabalho**: [`Zelda: Ocarina of Time (Switch 2)`](file:///home/marcos/Área%20de%20trabalho/Zelda_Ocarina_of_Time.desktop) aponta para [`jogar_zelda.sh`](./jogar_zelda.sh).
-- O script sincroniza automaticamente o perfil acima para os emuladores (`lichii`, `eglantine`, `eden`) antes de inicializar o jogo.
+Execute diretamente o atalho na Área de Trabalho:
+- [`Zelda: Ocarina of Time (Switch 2)`](file:///home/marcos/Área%20de%20trabalho/Zelda_Ocarina_of_Time.desktop) (chama `jogar_zelda.sh`).
