@@ -1,0 +1,22 @@
+# ROMs, Dumps e Pacotes de Jogos Nintendo
+*.nup
+*.nsp
+*.xci
+*.rar
+*.zip
+*.7z
+*.tar.*
+
+# Binarios e AppImages do Emulador
+*.AppImage
+*.AppImage.bak
+*.bak
+*.exe
+
+# Logs e arquivos temporarios
+*.log
+*.tmp
+*.lock
+
+# Screenshots pesadas locais (preserva apenas icon.png)
+screenshot_*.png
