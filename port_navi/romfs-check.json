@@ -1,0 +1,8 @@
+{
+ "status": "pass",
+ "files": 186583,
+ "damaged": {},
+ "repaired": {},
+ "not_repaired": [],
+ "romfs_sha256": "d713a4444462d92e6779bcd6612272d790bb59129a40669d372201161f48a291"
+}

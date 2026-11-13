@@ -23,6 +23,14 @@ Scripts de automação, patches de desempenho (60 FPS), configurações gráfica
 ├── instalar_patches.py         # Injetor automático dos patches de 60 FPS e Resolução Máxima
 ├── config/
 │   └── 0400486024DEC000.ini    # Configuração gráfica recomendada (fix de bloom, shaders assíncronos)
+├── port_navi/                  # Port nativo estático (NX2navi v0.10.1 - V2 1440p QHD / FSR)
+│   ├── DOCUMENTACAO_TECNICA_PORT_NAVI_V2.md # Registro completo do port, benchmarks e correções
+│   ├── nx2navi.ini             # Configuração otimizada (FSR 1, Async Replay, Low-End GPU)
+│   ├── jogar_navi_v2.sh        # Launcher nativo Gamescope + Feral GameMode (4.0 GHz)
+│   ├── monitor_navi_v2.py      # Widget gráfico de compilação em tempo real (Tkinter)
+│   ├── restaurar_backup_18fps.sh # Script de rollback automático em 1 clique
+│   ├── set_game_icon.py        # Fix de ícone da janela para o KDE Plasma / Wayland
+│   └── icon.png                # Ícone oficial da Navi
 ├── jogar_zelda.bat             # Script de inicialização rápida para Windows
 ├── preparar_windows.ps1        # Automação completa para configuração no Windows PowerShell
 ├── REGISTRO_DESEMPENHO_E_AJUSTES.md # Relatório técnico de desempenho e fixes de clarões brancos
@@ -80,6 +88,17 @@ chmod +x jogar_zelda.sh
 - **Desativação de Frame Generation Interno**: Desativado (`frame_gen=false`) para eliminar judder/tremor na imagem, permitindo taxa de quadros limpa.
 - **Modo Docked Forçado**: `use_docked_mode=1` para garantir a resolução e qualidade máxima dos shaders.
 - **Idioma**: Configurado para Português do Brasil (`language_index=17`, `region_index=1`).
+
+---
+
+## 🧚 Port Nativo para PC (NX2navi v0.10.1 - V2 1440p FSR)
+
+Além da emulação tradicional com Eglantine, o repositório inclui os arquivos e guia técnico do port nativo via recompilação estática com **NX2navi v0.10.1** na pasta [`port_navi/`](port_navi/):
+
+* **Documentação Completa:** [DOCUMENTACAO_TECNICA_PORT_NAVI_V2.md](port_navi/DOCUMENTACAO_TECNICA_PORT_NAVI_V2.md)
+* **Resolução:** 2560x1440 (QHD) com **AMD FSR 1** e nitidez de 80%.
+* **Desempenho Alcançado:** 19 FPS contínuos e estáveis (frametime médio de **51.9 ms**, sem travamentos de shader e sem leak de VRAM).
+* **Otimizações Inclusas:** `replay_async = 1` (paralelismo CPU/GPU), `low_end_gpu = 1` (submissões em lote Vulkan) e integração com o **Feral GameMode (`gamemoderun`)**.
 
 ---
 
