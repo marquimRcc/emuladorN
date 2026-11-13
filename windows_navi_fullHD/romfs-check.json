@@ -1,0 +1,19 @@
+{
+ "status": "pass",
+ "files": 186587,
+ "damaged": {
+  "Tex/CmnTex_Map_Soil_FairyFountain_Floor_D_Nrm.bntx.zs": "no compressed frame at its start",
+  "Tex/RBake_Scene_GanonStage_G_2_1_d0_t0.bntx.zs": "no compressed frame at its start",
+  "Tex/Rock_WaterTemple_Gate_M_01_Nrm.bntx.zs": "no compressed frame at its start",
+  "gsys/EnvObjSetMgrParam/Artwork.gsys__EnvObjSetMgrParam.bgyml": "nothing but zeros"
+ },
+ "repaired": {
+  "Tex/CmnTex_Map_Soil_FairyFountain_Floor_D_Nrm.bntx.zs": "Tex/CmnTex_Map_Rock_FairyFountain_Floor_A_Nrm.bntx.zs",
+  "Tex/RBake_Scene_GanonStage_G_2_1_d0_t0.bntx.zs": "Tex/RBake_Scene_GanonStage_G_1_2_d0_t0.bntx.zs",
+  "Tex/Rock_WaterTemple_Gate_M_01_Nrm.bntx.zs": "Tex/Rock_WaterTemple_Gate_P_01_Nrm.bntx.zs"
+ },
+ "not_repaired": [
+  "gsys/EnvObjSetMgrParam/Artwork.gsys__EnvObjSetMgrParam.bgyml"
+ ],
+ "romfs_sha256": "ce2f34fe896c7230d4f98a393cd30570a469507fcf4482026549485c04994671"
+}

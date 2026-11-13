@@ -17,6 +17,8 @@
 *.log
 *.tmp
 *.lock
+__pycache__/
+
 
 # Screenshots pesadas locais (preserva apenas icon.png)
 screenshot_*.png

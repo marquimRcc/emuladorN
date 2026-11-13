@@ -23,15 +23,24 @@ Scripts de automação, patches de desempenho (60 FPS), configurações gráfica
 ├── instalar_patches.py         # Injetor automático dos patches de 60 FPS e Resolução Máxima
 ├── config/
 │   └── 0400486024DEC000.ini    # Configuração gráfica recomendada (fix de bloom, shaders assíncronos)
-├── port_navi/                  # Port nativo estático (NX2navi v0.10.1 - V2 1440p QHD / FSR)
-│   ├── DOCUMENTACAO_TECNICA_PORT_NAVI_V2.md # Registro completo do port, benchmarks e correções
-│   ├── nx2navi.ini             # Configuração otimizada (FSR 1, Async Replay, Low-End GPU)
+├── port_navi/                  # Port nativo estático Linux (NX2navi v0.10.1 - V2 1440p QHD / FSR)
+│   ├── DOCUMENTACAO_TECNICA_PORT_NAVI_V2.md # Registro completo do port Linux, benchmarks e correções
+│   ├── nx2navi.ini             # Configuração otimizada Linux (FSR 1, Async Replay, Low-End GPU)
 │   ├── jogar_navi_v2.sh        # Launcher nativo Gamescope + Feral GameMode (4.0 GHz)
 │   ├── monitor_navi_v2.py      # Widget gráfico de compilação em tempo real (Tkinter)
 │   ├── restaurar_backup_18fps.sh # Script de rollback automático em 1 clique
 │   ├── set_game_icon.py        # Fix de ícone da janela para o KDE Plasma / Wayland
 │   └── icon.png                # Ícone oficial da Navi
-├── jogar_zelda.bat             # Script de inicialização rápida para Windows
+├── windows_navi_fullHD/        # Port nativo estático Windows 11 (NX2navi v0.10.1 - FullHD 1080p @ 30 FPS)
+│   ├── DOCUMENTACAO_TECNICA_WINDOWS_FULLHD.md # Relatório técnico completo de validação (30 FPS, 33.3 ms, 63 °C)
+│   ├── nx2navi.ini             # Configuração consolidada (FSR 1 80%, ASTC RGBA8 puro, heap_lazy)
+│   ├── jogar_zelda.bat         # Launcher Windows 1080p com variáveis de ambiente e suporte a controle
+│   ├── configurar_pagefile.bat # Script com elevação UAC para fix de memória virtual no D:\
+│   ├── configurar_pagefile_d.ps1 # Script WMI de paginação (16-32 GB dedicados)
+│   ├── romfs-check.json        # Auditoria de integridade do RomFS
+│   ├── icon.png                # Ícone em alta resolução
+│   └── README.md               # Guia rápido de execução no Windows
+├── jogar_zelda.bat             # Script de inicialização rápida para Windows (raiz)
 ├── preparar_windows.ps1        # Automação completa para configuração no Windows PowerShell
 ├── REGISTRO_DESEMPENHO_E_AJUSTES.md # Relatório técnico de desempenho e fixes de clarões brancos
 ├── GUIA_MIGRACAO_WINDOWS.md    # Guia detalhado de migração e configuração no Windows
@@ -91,13 +100,21 @@ chmod +x jogar_zelda.sh
 
 ---
 
-## 🧚 Port Nativo para PC (NX2navi v0.10.1 - V2 1440p FSR)
+## 🧚 Ports Nativos para PC (NX2navi v0.10.1)
 
-Além da emulação tradicional com Eglantine, o repositório inclui os arquivos e guia técnico do port nativo via recompilação estática com **NX2navi v0.10.1** na pasta [`port_navi/`](port_navi/):
+Além da emulação tradicional com Eglantine, o repositório inclui os arquivos e guias técnicos dos ports nativos via recompilação estática com **NX2navi v0.10.1**:
 
-* **Documentação Completa:** [DOCUMENTACAO_TECNICA_PORT_NAVI_V2.md](port_navi/DOCUMENTACAO_TECNICA_PORT_NAVI_V2.md)
-* **Resolução:** 2560x1440 (QHD) com **AMD FSR 1** e nitidez de 80%.
-* **Desempenho Alcançado:** 19 FPS contínuos e estáveis (frametime médio de **51.9 ms**, sem travamentos de shader e sem leak de VRAM).
+### 1. Windows FullHD 1080p @ 30 FPS Travado ([`windows_navi_fullHD/`](windows_navi_fullHD/))
+- **Documentação Completa:** [DOCUMENTACAO_TECNICA_WINDOWS_FULLHD.md](windows_navi_fullHD/DOCUMENTACAO_TECNICA_WINDOWS_FULLHD.md)
+- **Resolução:** 1920x1080 (Janela FullHD).
+- **Desempenho Validado:** **30.0 FPS cravados** (1% piores: 30 FPS | 0.1% piores: 30 FPS), tempo de quadro perfeitamente plano em **33.3 ms**.
+- **Consumo e Térmica:** GPU a frios **63 °C** com apenas **52W** de consumo (AMD Radeon RX 6750 XT).
+- **Correções Gráficas:** Zero blocos cianos em Kokiri (`astc_bc = 0`), zero piscadas pretas (`replay_async = 0`) e arquivo de paginação dedicado no disco D: (`configurar_pagefile.bat`).
+
+### 2. Linux 1440p QHD ([`port_navi/`](port_navi/))
+- **Documentação Completa:** [DOCUMENTACAO_TECNICA_PORT_NAVI_V2.md](port_navi/DOCUMENTACAO_TECNICA_PORT_NAVI_V2.md)
+- **Resolução:** 2560x1440 (QHD) com **AMD FSR 1** e nitidez de 80%.
+- **Desempenho Alcançado:** 19 FPS contínuos e estáveis (frametime médio de **51.9 ms**, sem travamentos de shader e sem leak de VRAM).
 * **Otimizações Inclusas:** `replay_async = 1` (paralelismo CPU/GPU), `low_end_gpu = 1` (submissões em lote Vulkan) e integração com o **Feral GameMode (`gamemoderun`)**.
 
 ---
