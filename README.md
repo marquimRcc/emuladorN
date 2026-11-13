@@ -40,6 +40,11 @@ Scripts de automação, patches de desempenho (60 FPS), configurações gráfica
 │   ├── romfs-check.json        # Auditoria de integridade do RomFS
 │   ├── icon.png                # Ícone em alta resolução
 │   └── README.md               # Guia rápido de execução no Windows
+├── windows_longshot/           # Configuração e automação do emulador/port Longshot (Team MagicBean)
+│   ├── DOCUMENTACAO_TECNICA_WINDOWS_LONGSHOT.md # Mapeamento técnico e equivalência dos parâmetros
+│   ├── longshot_options.ini    # Configuração calibrada para RX 6750 XT e 1080p
+│   ├── jogar_zelda_longshot.bat # Launcher automatizado com travas de ambiente
+│   └── README.md               # Guia de uso do Longshot no Windows
 ├── jogar_zelda.bat             # Script de inicialização rápida para Windows (raiz)
 ├── preparar_windows.ps1        # Automação completa para configuração no Windows PowerShell
 ├── REGISTRO_DESEMPENHO_E_AJUSTES.md # Relatório técnico de desempenho e fixes de clarões brancos
@@ -100,11 +105,17 @@ chmod +x jogar_zelda.sh
 
 ---
 
-## 🧚 Ports Nativos para PC (NX2navi v0.10.1)
+## 🧚 Ports Nativos para PC (NX2navi & Longshot)
 
-Além da emulação tradicional com Eglantine, o repositório inclui os arquivos e guias técnicos dos ports nativos via recompilação estática com **NX2navi v0.10.1**:
+Além da emulação tradicional com Eglantine, o repositório inclui os arquivos e guias técnicos dos ports nativos via recompilação estática com **NX2navi v0.10.1** e **Longshot** (Team MagicBean):
 
-### 1. Windows FullHD 1080p @ 30 FPS Travado ([`windows_navi_fullHD/`](windows_navi_fullHD/))
+### 1. Windows Longshot 1080p ([`windows_longshot/`](windows_longshot/))
+- **Documentação Completa:** [DOCUMENTACAO_TECNICA_WINDOWS_LONGSHOT.md](windows_longshot/DOCUMENTACAO_TECNICA_WINDOWS_LONGSHOT.md)
+- **Emulador/Port:** Longshot v1.0.0-rc.3 / v3.0.0-rc (sucessor do Hookshot).
+- **Configurações dos Commits Aplicadas:** Resolução FullHD 1080p nativa (`output_res = 1920x1080`, `resolution = 1`), AMD FSR 3.1 com nitidez 80% (`dlss = 3`, `sharpness = 80`), cadência fixa (`frame_pacing = 1`, `realtime = 1`), teto de VRAM protegido em 6.2 GB (`preset = 4`, `vram_budget = 4`) e mapeamento Xbox em português (`pad_layout = 1`, `game_lang = 8`).
+- **Launcher:** [`jogar_zelda_longshot.bat`](windows_longshot/jogar_zelda_longshot.bat).
+
+### 2. Windows FullHD 1080p @ 30 FPS Travado ([`windows_navi_fullHD/`](windows_navi_fullHD/))
 - **Documentação Completa:** [DOCUMENTACAO_TECNICA_WINDOWS_FULLHD.md](windows_navi_fullHD/DOCUMENTACAO_TECNICA_WINDOWS_FULLHD.md)
 - **Resolução:** 1920x1080 (Janela FullHD).
 - **Desempenho Validado:** **30.0 FPS cravados** (1% piores: 30 FPS | 0.1% piores: 30 FPS), tempo de quadro perfeitamente plano em **33.3 ms**.
