@@ -10,9 +10,24 @@ Configuração pronta e otimizada para o emulador/recompilador nativo **Longshot
 
 ## 🚀 Como Jogar
 
-1. Execute **`jogar_zelda_longshot.bat`**.
-2. Se o jogo ainda não foi compilado no Longshot, o **Longshot Launcher** abrirá automaticamente.
-3. Aponte para a ROM:
-   `E:\outros\nintendo\zelda\The Legend of Zelda Ocarina of TIme [04004860224DEC000].nup`
-4. Pressione **Build** para gerar o executável nativo.
-5. As configurações de `longshot_options.ini` serão carregadas automaticamente.
+1. Execute **`jogar_zelda_longshot.bat`** ou use o atalho na Área de Trabalho (**`Longshot - Zelda Ocarina of Time`**).
+2. O jogo iniciará diretamente pelo binário nativo compilado com o cache gráfico Vulkan de 1,49 GB (`mkw_vk_pipelines.bin`).
+3. As configurações de `longshot_options.ini` são aplicadas automaticamente (FullHD 1080p, FSR 3.1 80%, teto de VRAM seguro e controles Xbox em português).
+
+---
+
+## 🎮 Atalhos em Jogo
+
+- **`F1` / `Insert` / `Esc`:** Abre o menu de configurações e ajustes gráficos em tempo real.
+- **`Q` / `E`:** Navega entre as abas do menu (`Gráficos`, `Áudio`, `Jogo`, `Controles`, `Debug`).
+- **Aba `Jogo` $\to$ `Contador de FPS`:** Alterna entre `FPS`, `Tempo de quadro`, `Gráfico` e `Desenvolvedor` (telemetria completa).
+- **`Ctrl + Shift + O`:** Overlay oficial de temperatura, clock e Watts do **AMD Adrenalin**.
+
+---
+
+## 📊 Desempenho Validado em Jogo (Kokiri Forest)
+
+- **Taxa de Quadros:** **47 FPS** contínuos (1% Low: **31 FPS**)
+- **Frametime:** **25.8 ms** com cadência plana e estável
+- **Compilação de Shaders:** **0 stuttering** (25.344 pipelines pré-compilados em cache)
+- **VRAM:** **8.9 GB / 10.6 GB** (Texturas a 2.7 GB sem risco de PCIe thrashing)

@@ -25,6 +25,14 @@ if not exist "C:\Users\marcos\Games\Longshot" mkdir "C:\Users\marcos\Games\Longs
 copy /y "%~dp0longshot_options.ini" "C:\Users\marcos\Games\Longshot\longshot_options.ini" >nul 2>&1
 
 rem Verificacao do binario executavel do jogo Longshot
+if exist "C:\Users\marcos\Documents\emulador\longshot\LongshotLauncher-data\builds\v3.0.0-rc.3\longshot.exe" (
+    echo Iniciando o jogo via Longshot compilado (v3.0.0-rc.3)...
+    cd /d "C:\Users\marcos\Documents\emulador\longshot\LongshotLauncher-data\builds\v3.0.0-rc.3"
+    copy /y "%~dp0longshot_options.ini" "longshot_options.ini" >nul 2>&1
+    start "" "longshot.exe"
+    exit /b 0
+)
+
 if exist "C:\Users\marcos\Games\Longshot\longshot.exe" (
     echo Iniciando o jogo via Longshot compilado...
     cd /d "C:\Users\marcos\Games\Longshot"

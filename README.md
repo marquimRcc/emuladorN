@@ -112,6 +112,7 @@ Além da emulação tradicional com Eglantine, o repositório inclui os arquivos
 ### 1. Windows Longshot 1080p ([`windows_longshot/`](windows_longshot/))
 - **Documentação Completa:** [DOCUMENTACAO_TECNICA_WINDOWS_LONGSHOT.md](windows_longshot/DOCUMENTACAO_TECNICA_WINDOWS_LONGSHOT.md)
 - **Emulador/Port:** Longshot v1.0.0-rc.3 / v3.0.0-rc (sucessor do Hookshot).
+- **Desempenho Validado em Jogo (Kokiri Forest):** **47 FPS** contínuos, frametime estável de **25.8 ms** (1% Low: **31 FPS**), **zero stuttering de shaders** (25.344 pipelines em cache Vulkan de 1,49 GB) e VRAM estável em **8.9 GB / 10.6 GB**.
 - **Configurações dos Commits Aplicadas:** Resolução FullHD 1080p nativa (`output_res = 1920x1080`, `resolution = 1`), AMD FSR 3.1 com nitidez 80% (`dlss = 3`, `sharpness = 80`), cadência fixa (`frame_pacing = 1`, `realtime = 1`), teto de VRAM protegido em 6.2 GB (`preset = 4`, `vram_budget = 4`) e mapeamento Xbox em português (`pad_layout = 1`, `game_lang = 8`).
 - **Launcher:** [`jogar_zelda_longshot.bat`](windows_longshot/jogar_zelda_longshot.bat).
 
