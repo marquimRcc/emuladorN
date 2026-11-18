@@ -1,0 +1,20 @@
+# The game's language. Change the line below to one of the codes listed here, save, and start the game again.
+
+pt-BR
+
+# en-US    English (US)
+# en-GB    English (UK)
+# fr       French (France)
+# fr-CA    French (Canada)
+# de       German
+# it       Italian
+# es       Spanish (Spain)
+# es-419   Spanish (Latin America)
+# pt-BR    Portuguese (Brazil)
+# nl       Dutch
+# pl       Polish
+# ru       Russian
+# ja       Japanese
+# ko       Korean
+# zh-Hans  Chinese (Simplified)
+# zh-Hant  Chinese (Traditional)

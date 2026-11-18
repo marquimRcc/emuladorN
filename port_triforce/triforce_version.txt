@@ -1,0 +1,2 @@
+version=v0.4.0
+builder=/home/marcos/Downloads/Triforce-v0.4.0-linux-test-x86_64.AppImage

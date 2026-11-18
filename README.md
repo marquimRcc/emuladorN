@@ -31,6 +31,14 @@ Scripts de automação, patches de desempenho (60 FPS), configurações gráfica
 │   ├── restaurar_backup_18fps.sh # Script de rollback automático em 1 clique
 │   ├── set_game_icon.py        # Fix de ícone da janela para o KDE Plasma / Wayland
 │   └── icon.png                # Ícone oficial da Navi
+├── port_triforce/              # Port nativo unificado Linux (Triforce Project v0.4.0 - 1080p FSR)
+│   ├── DOCUMENTACAO_TECNICA_PORT_TRIFORCE.md # Documentação completa do port, FSR 3.1/4 e MangoHud
+│   ├── triforce_options.ini    # Configuração gráfica e telemetria (1080p nativo, FPS counter)
+│   ├── jogar_triforce.sh       # Launcher Gamescope 1080p -> 1440p FSR + GameMode + MangoHud
+│   ├── set_game_icon.py        # Injetor ctypes libX11 multi-resolução com canal alpha real
+│   ├── monitor_triforce.py     # Widget gráfico de compilação em tempo real (Tkinter)
+│   ├── triforce.png            # Brasão oficial do Triforce Project em alta definição
+│   └── Zelda_Triforce_v0.4.0.desktop # Atalho de integração do sistema
 ├── windows_navi_fullHD/        # Port nativo estático Windows 11 (NX2navi v0.10.1 - FullHD 1080p @ 30 FPS)
 │   ├── DOCUMENTACAO_TECNICA_WINDOWS_FULLHD.md # Relatório técnico completo de validação (30 FPS, 33.3 ms, 63 °C)
 │   ├── nx2navi.ini             # Configuração consolidada (FSR 1 80%, ASTC RGBA8 puro, heap_lazy)
@@ -128,6 +136,18 @@ Além da emulação tradicional com Eglantine, o repositório inclui os arquivos
 - **Resolução:** 2560x1440 (QHD) com **AMD FSR 1** e nitidez de 80%.
 - **Desempenho Alcançado:** 19 FPS contínuos e estáveis (frametime médio de **51.9 ms**, sem travamentos de shader e sem leak de VRAM).
 * **Otimizações Inclusas:** `replay_async = 1` (paralelismo CPU/GPU), `low_end_gpu = 1` (submissões em lote Vulkan) e integração com o **Feral GameMode (`gamemoderun`)**.
+
+---
+
+## 🔺 Port Nativo para PC (Triforce Project v0.4.0 - 1080p FSR)
+
+Com a fusão oficial do NX2navi ao projeto Triforce ([triforceproject.com](https://triforceproject.com)), o repositório inclui a suíte de scripts, configurações e guia técnico do **Triforce v0.4.0** na pasta [`port_triforce/`](port_triforce/):
+
+* **Documentação Completa:** [DOCUMENTACAO_TECNICA_PORT_TRIFORCE.md](port_triforce/DOCUMENTACAO_TECNICA_PORT_TRIFORCE.md)
+* **Resolução:** Renderização interna em 1920x1080 (Full HD) com upscaling AMD FSR por hardware via Gamescope para o monitor 1440p a 165Hz.
+* **Telemetria Dupla:** MangoHud nativo do Regata OS (GPU/CPU %, temps, frequências, VRAM/RAM, gráfico de frametime) + contador oficial de FPS in-game no HUD.
+* **FSR 3.1 & FSR 4:** FSR 3.1 nativo embutido em SPIR-V; preparação arquitetural para FSR 4 via `amd_fidelityfx_upscaler_vk.so`.
+* **Injeção de Ícone:** Utilitário Python ctypes com `libX11.so.6` para suporte a ícones ARGB 32-bit (16x16 até 256x256 com canal alpha real).
 
 ---
 
