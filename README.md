@@ -48,11 +48,14 @@ Scripts de automação, patches de desempenho (60 FPS), configurações gráfica
 │   ├── romfs-check.json        # Auditoria de integridade do RomFS
 │   ├── icon.png                # Ícone em alta resolução
 │   └── README.md               # Guia rápido de execução no Windows
-├── windows_longshot/           # Configuração e automação do emulador/port Longshot (Team MagicBean)
-│   ├── DOCUMENTACAO_TECNICA_WINDOWS_LONGSHOT.md # Mapeamento técnico e equivalência dos parâmetros
-│   ├── longshot_options.ini    # Configuração calibrada para RX 6750 XT e 1080p
-│   ├── jogar_zelda_longshot.bat # Launcher automatizado com travas de ambiente
-│   └── README.md               # Guia de uso do Longshot no Windows
+├── windows_longshot/           # Configuração e automação do emulador/port Longshot 3.0 (Team MagicBean)
+│   ├── DOCUMENTACAO_TECNICA_WINDOWS_LONGSHOT.md # Relatório técnico de fixes (ASTC, Vulkan 1.4, DIB icon, memória)
+│   ├── longshot_options.ini    # Configuração calibrada para RX 6750 XT e 1080p 60 FPS
+│   ├── jogar_zelda_longshot.bat # Launcher automatizado com travas de ambiente e Anti-Lag 2
+│   ├── criar_atalho_desktop.ps1 # Automação para gerar atalho com ícone nativo no Desktop
+│   ├── longshot.ico            # Ícone oficial multi-resolução nativo DIB (16-128px) + PNG (256px)
+│   ├── longshot.png            # Logotipo oficial 512x512 com canal alpha
+│   └── README.md               # Guia de uso do Longshot 3.0 no Windows
 ├── jogar_zelda.bat             # Script de inicialização rápida para Windows (raiz)
 ├── preparar_windows.ps1        # Automação completa para configuração no Windows PowerShell
 ├── REGISTRO_DESEMPENHO_E_AJUSTES.md # Relatório técnico de desempenho e fixes de clarões brancos
@@ -117,12 +120,12 @@ chmod +x jogar_zelda.sh
 
 Além da emulação tradicional com Eglantine, o repositório inclui os arquivos e guias técnicos dos ports nativos via recompilação estática com **NX2navi v0.10.1** e **Longshot** (Team MagicBean):
 
-### 1. Windows Longshot 1080p ([`windows_longshot/`](windows_longshot/))
+### 1. Windows Longshot 3.0 Nativo ([`windows_longshot/`](windows_longshot/))
 - **Documentação Completa:** [DOCUMENTACAO_TECNICA_WINDOWS_LONGSHOT.md](windows_longshot/DOCUMENTACAO_TECNICA_WINDOWS_LONGSHOT.md)
-- **Emulador/Port:** Longshot v1.0.0-rc.3 / v3.0.0-rc (sucessor do Hookshot).
-- **Desempenho Validado em Jogo (Kokiri Forest):** **47 FPS** contínuos, frametime estável de **25.8 ms** (1% Low: **31 FPS**), **zero stuttering de shaders** (25.344 pipelines em cache Vulkan de 1,49 GB) e VRAM estável em **8.9 GB / 10.6 GB**.
-- **Configurações dos Commits Aplicadas:** Resolução FullHD 1080p nativa (`output_res = 1920x1080`, `resolution = 1`), AMD FSR 3.1 com nitidez 80% (`dlss = 3`, `sharpness = 80`), cadência fixa (`frame_pacing = 1`, `realtime = 1`), teto de VRAM protegido em 6.2 GB (`preset = 4`, `vram_budget = 4`) e mapeamento Xbox em português (`pad_layout = 1`, `game_lang = 8`).
-- **Launcher:** [`jogar_zelda_longshot.bat`](windows_longshot/jogar_zelda_longshot.bat).
+- **Emulador/Port:** Longshot v3.0.0 (sucessor do Hookshot).
+- **Desempenho Validado em Jogo (Kokiri Forest):** **60.0 FPS** cravados e contínuos, tempo de GPU de apenas **0.82 ms** por quadro, **zero draws descartados** (`0.0 draws left out`) e memória RAM estabilizada em ~3,5 GB.
+- **Configurações dos Commits Aplicadas:** Resolução FullHD 1080p nativa (`output_res = 1920x1080`, `resolution = 1`), AMD Anti-Lag 2 ativo (`amd_anti-lag_2 = 1`), cadência fixa (`frame_pacing = 1`, `realtime = 1`), teto de VRAM protegido em 4 GB (`preset = 4`, `vram_budget = 4`) e mapeamento Xbox em português (`pad_layout = 1`, `game_lang = 8`).
+- **Launcher e Atalho:** [`jogar_zelda_longshot.bat`](windows_longshot/jogar_zelda_longshot.bat) e [`criar_atalho_desktop.ps1`](windows_longshot/criar_atalho_desktop.ps1) com ícone oficial [`longshot.ico`](windows_longshot/longshot.ico).
 
 ### 2. Windows FullHD 1080p @ 30 FPS Travado ([`windows_navi_fullHD/`](windows_navi_fullHD/))
 - **Documentação Completa:** [DOCUMENTACAO_TECNICA_WINDOWS_FULLHD.md](windows_navi_fullHD/DOCUMENTACAO_TECNICA_WINDOWS_FULLHD.md)
