@@ -84,3 +84,12 @@ A atualização para a v0.5.2 utilizou o mecanismo `--update` com reutilização
 ```bash
 /home/marcos/Games/Triforce/jogar_triforce.sh --direct
 ```
+
+---
+
+## 6. Diretriz Operacional de Atualização (Política "Chegar e Jogar")
+
+* **Compilação 100% Antecipada em Background:** Em todas as futuras atualizações e builds (seja Triforce, NX2navi ou ports derivados), **NUNCA** utilizar `--no-prepare-shaders` ou adiar etapas para a primeira execução do usuário.
+* **Aquecimento e Pré-Preparação de Shaders:** O processo automatizado em segundo plano deve realizar o ciclo completo de preparação dos pipelines Vulkan e programas gráficos antes de notificar o usuário ou liberar o atalho.
+* **Objetivo de UX:** O usuário não deve aguardar compilação em primeiro plano ao abrir o jogo; o ambiente deve ser entregue 100% fluido e pronto para jogar imediatamente.
+
