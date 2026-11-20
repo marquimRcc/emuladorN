@@ -39,13 +39,15 @@ Conforme solicitado, mantivemos separação total:
 [Renderer]
 # Qualidade visual e texturas perfeitas (sem rosto preto)
 astc_recompression=0        # Uncompressed (qualidade máxima original)
-resolution_setup=2          # Res1X (1.0x nativo)
+resolution_setup=3          # Res1X (1.0x nativo no daily-20261120)
 vram_usage_mode=0           # Conservative
 
-# Fluidez máxima e entrega contínua
+# Fluidez máxima e entrega contínua Vulkan RADV
 use_asynchronous_shaders=true
 use_vsync=3                 # FifoRelaxed
 use_reactive_flushing=true
+async_presentation=true     # Fila de apresentação assíncrona desacoplada
+force_max_clock=true        # GPU AMD em frequência máxima constante
 
 # Eliminação garantida de clarões
 gpu_accuracy=1              # High
@@ -54,6 +56,22 @@ fix_bloom_effects=true
 
 ---
 
-## 4. Inicialização
+## 4. Diagnóstico de Fluidez e Correções
+
+Na captura inicial do teste (`media_1795204881195.jpg`), os gráficos ficaram excelentes, porém com 18 FPS e sensação travada. Os motivos confirmados por telemetria e corrigidos foram:
+
+1. **Compilação em Segundo Plano de 4.182 Shaders**:
+   - O canto inferior exibia `Building: 4182 shader(s)`. O log registrou `Shader precache: 3877 compute programs built in 133.1 s`, consumindo todos os 12 threads da CPU durante a jogatina.
+   - **Correção**: A compilação terminou e gerou o cache em disco (`warm-compute.done` e `vulkan_pipelines.mythos.bin` com 70 MB). As próximas execuções já iniciam a quente, com zero carga residual de CPU.
+2. **Modo `HANDHELD`**:
+   - A barra exibia `HANDHELD` (perfil térmico e de clock rebaixado). Pressionando **`F10`** (ou `Home + X` no controle) ou clicando no botão inferior, alterna-se para **`DOCKED`**, liberando o clock máximo da CPU/GPU virtual.
+3. **Escala Fracionária 0.75x Corrigida para 1.0x**:
+   - O índice de resolução mudou nesta versão; `resolution_setup=3` garante renderização nativa 1:1 sem interpolação.
+4. **Desacoplamento Vulkan**:
+   - `async_presentation=true` e `force_max_clock=true` garantem que o driver RADV não congele a fila de desenho aguardando o compositor gráfico.
+
+---
+
+## 5. Inicialização
 
 - **Atalho da Área de Trabalho**: [`Zelda: Ocarina of Time (Switch 2)`](file:///home/marcos/Área%20de%20trabalho/Zelda_Ocarina_of_Time.desktop) aponta para `jogar_zelda.sh`, que nesta branch executa automaticamente o novo `eglantine-daily-20261120-pgo.AppImage`.
