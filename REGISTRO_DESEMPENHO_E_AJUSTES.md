@@ -1,66 +1,59 @@
 # Registro Técnico: Desempenho, Patches e Ajustes Gráficos
 **Jogo:** The Legend of Zelda: Ocarina of Time (Nintendo Switch 2 / Remake)  
 **Title ID:** `0400486024DEC000` | **Build ID (main):** `E0F3CCFAF50065AE4EA01EB5AEB13B1A45DA3348`  
-**Emulador Principal:** Eglantine v0.1.0-rc3 PGO (`eglantine.AppImage`)  
+**Branch de Teste Atual:** `test/eglantine-daily-20261120`  
+**Emulador em Teste:** Eglantine Daily 20/11/2026 PGO (`eglantine-daily-20261120-pgo.AppImage`)  
 **Ambiente:** Linux (Regata OS), Vulkan RADV (AMD Radeon RX 6700 XT)  
-**Última Atualização:** 12/11/2026  
+**Última Atualização:** 20/11/2026  
 
 ---
 
-## 1. Diagnóstico do Regresso Visual (Rosto Preto e 10 FPS a 0.5x)
+## 1. Isolamento do Ambiente de Teste
 
-Ao analisar a imagem fornecida pelo usuário, foram identificadas 3 regressões decorrentes de índices de enum incorretos na última alteração do INI:
-
-1. **Rosto do Link Preto e Texturas Corrompidas**:
-   - `astc_recompression=1` mapeou para **`Bc1` (DXT1)**. O formato BC1 não suporta canal alpha gradativo (possui apenas 1 bit de alpha). Como o mapa facial do Link e detalhes de madeira usam transparência alfa no ASTC, o formato BC1 destruiu a textura e transformou o rosto em um bloco preto.
-   - **Correção**: `astc_recompression=0` (**Uncompressed / Best Quality**). A GPU AMD RX 6700 XT decodifica o ASTC nativamente via Compute Shaders com 100% de fidelidade visual.
-2. **Resolução em 0.5x (`Scale: 0.5x`)**:
-   - `resolution_setup=1` mapeou para `Res1_2X` (metade da resolução nativa).
-   - **Correção**: `resolution_setup=2` (**`Res1X`** = 1.0x nativo).
-3. **Queda para 10 FPS e Stuttering de VRAM**:
-   - `vram_usage_mode=1` mapeou para `Aggressive`, forçando descarte contínuo de texturas do cache da GPU e gerando 93ms por quadro.
-   - **Correção**: `vram_usage_mode=0` (**`Conservative`**).
+Conforme solicitado, mantivemos separação total:
+1. **No Git**:
+   - Branch dedicada: [`test/eglantine-daily-20261120`](https://github.com/marquimRcc/emuladorN/tree/test/eglantine-daily-20261120), completamente isolada da `main`.
+2. **Na Pasta Local**:
+   - Arquivo do emulador baixado como binário independente: `eglantine-daily-20261120-pgo.AppImage`.
+   - Os builds anteriores (`eglantine-v0.1.0-rc3-pgo.AppImage`, `lichii-v160-pgo.AppImage`) permanecem intactos e intocados para qualquer necessidade de retorno instantâneo.
+   - Launcher [`jogar_zelda.sh`](./jogar_zelda.sh) configurado para priorizar o build de 20/11 nesta branch.
 
 ---
 
-## 2. Configuração Final Consolidada (`config/0400486024DEC000.ini`)
+## 2. Destaques do Novo Build (`daily-20261120`)
+
+1. **Branch de Performance 60 FPS (`perf/oot-60-fps-cope`)**:
+   - Reformulação do sincronismo de quadros: não segura mais núcleos da CPU do host em espera ativa de fences, liberando o processador para cadência fluida a 60 FPS.
+2. **Otimizações para AMD Radeon (Commit `b54d1f06`)**:
+   - Correção de gargalos de textura e swizzle no pipeline Vulkan (RADV) para GPUs AMD Navi 22.
+3. **Popup Redesenhado (PR #837 / #800)**:
+   - Não sobrepõe mais configurações agressivamente em runtime.
+4. **FFmpeg Embutido (PR #856)**:
+   - Decodificação nativa de vídeos e áudio empacotada no AppImage.
+
+---
+
+## 3. Configuração Ativa (`config/0400486024DEC000.ini`)
 
 ```ini
 [Renderer]
-# 1. Resolução e Qualidade Visual Perfeitas
-resolution_setup\use_global=false
-resolution_setup\default=false
-resolution_setup=2                  # Res1X (1.0x Nativo)
+# Qualidade visual e texturas perfeitas (sem rosto preto)
+astc_recompression=0        # Uncompressed (qualidade máxima original)
+resolution_setup=2          # Res1X (1.0x nativo)
+vram_usage_mode=0           # Conservative
 
-astc_recompression\use_global=false
-astc_recompression\default=false
-astc_recompression=0                # Uncompressed (Texturas e Rosto 100% fiéis)
+# Fluidez máxima e entrega contínua
+use_asynchronous_shaders=true
+use_vsync=3                 # FifoRelaxed
+use_reactive_flushing=true
 
-vram_usage_mode\use_global=false
-vram_usage_mode\default=false
-vram_usage_mode=0                   # Conservative (Sem descarte de texturas)
-
-# 2. Fluidez Total e Cadência Suave
-use_asynchronous_shaders\use_global=false
-use_asynchronous_shaders\default=false
-use_asynchronous_shaders=true       # Shaders assíncronos
-
-use_vsync\use_global=false
-use_vsync\default=false
-use_vsync=3                         # FifoRelaxed
-
-# 3. Eliminação dos Clarões
-gpu_accuracy\use_global=false
-gpu_accuracy\default=false
-gpu_accuracy=1                      # High (impede overflow de bloom)
-
-fix_bloom_effects\use_global=false
-fix_bloom_effects\default=false
+# Eliminação garantida de clarões
+gpu_accuracy=1              # High
 fix_bloom_effects=true
 ```
 
 ---
 
-## 3. Launcher
+## 4. Inicialização
 
-- Launcher [`jogar_zelda.sh`](./jogar_zelda.sh) configurado para rodar `eglantine.AppImage` com auto-rejeição do popup de configurações recomendado (fecha via `Escape`).
+- **Atalho da Área de Trabalho**: [`Zelda: Ocarina of Time (Switch 2)`](file:///home/marcos/Área%20de%20trabalho/Zelda_Ocarina_of_Time.desktop) aponta para `jogar_zelda.sh`, que nesta branch executa automaticamente o novo `eglantine-daily-20261120-pgo.AppImage`.
