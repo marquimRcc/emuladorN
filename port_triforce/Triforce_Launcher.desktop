@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Triforce Launcher (v0.5.2)
+Comment=Painel Oficial Triforce: Saves, Mods, Benchmark e Configurações
+Exec=/home/marcos/Games/Triforce/triforce
+Icon=/home/marcos/Games/Triforce/triforce.png
+Path=/home/marcos/Games/Triforce
+Terminal=false
+StartupNotify=true
+StartupWMClass=triforce
+Categories=Game;Settings;

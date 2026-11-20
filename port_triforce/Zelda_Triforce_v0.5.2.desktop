@@ -1,8 +1,8 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Zelda: Ocarina of Time (Triforce v0.4.0)
-Comment=The Legend of Zelda: Ocarina of Time (Triforce Project v0.4.0 - 1080p FSR)
+Name=Zelda: Ocarina of Time (Triforce v0.5.2)
+Comment=The Legend of Zelda: Ocarina of Time (Triforce Project v0.5.2 - 1080p FSR)
 Exec=/home/marcos/Games/Triforce/jogar_triforce.sh
 Icon=/home/marcos/Games/Triforce/triforce.png
 Path=/home/marcos/Games/Triforce

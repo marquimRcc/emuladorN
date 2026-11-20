@@ -1,96 +1,86 @@
-# Documentação Técnica: Port Triforce v0.4.0 (Triforce Project - Linux Nativo)
+# Documentação Técnica: Port Triforce v0.5.2 (Triforce Project - Linux Nativo)
 **Projeto:** The Legend of Zelda: Ocarina of Time (Switch 2 → PC Linux Nativo)  
 **Ambiente de Execução:** Regata OS (Linux x86_64 / KDE Plasma / X11 / Gamescope), Intel Core i5-12400F (6C/12T), AMD Radeon RX 6750 XT (12 GB VRAM / Mesa RADV Navi 22 / ACO)  
-**Data:** 18 de Novembro de 2026  
-**Status:** Implantado, compilado, integrado e validado (Full HD 1080p com upscale FSR no Gamescope, MangoHud nativo, telemetria in-game e ícone oficial multi-resolução)
+**Data da Atualização:** 19 de Novembro de 2026  
+**Status:** Atualizado para Triforce v0.5.2 (Build incremental finalizado em 2m53s sem falhas). Full HD 1080p nativo com upscale FSR no Gamescope, novo launcher com benchmark automático ("Find my best settings"), suporte a mods e gerenciamento de saves.
 
 ---
 
-## 1. Objetivo & Contexto
-Com a fusão oficial do projeto **NX2navi** ao ecossistema unificado **Triforce** ([triforceproject.com](https://triforceproject.com)), foi lançado o release `Triforce-v0.4.0-linux-test-x86_64.AppImage`.
-O objetivo desta etapa foi implantar de forma isolada e limpa o ambiente **Triforce v0.4.0** em `/home/marcos/Games/Triforce/`, mantendo 100% intactos os ambientes legados (`/home/marcos/Games/Navi/` e `/home/marcos/Games/Navi_V2/`), aproveitando todos os ativos já extraídos e ajustando o pipeline para máxima estabilidade e fluidez.
+## 1. Histórico de Versões e Evolução
 
----
-
-## 2. Arquitetura e Aproveitamento de Recursos
-Para evitar consumo redundante de armazenamento (que exigiria dezenas de gigabytes adicionais), adotou-se arquitetura de reaproveitamento de ativos:
-
-```
-[ ROM / Repositório Existente ]
-         │
-         ├──► RomFS (26.2 GB / 186.583 arquivos) ──► Reuso imediato via Hardlinks (0 bytes extras de disco)
-         │
-         ├──► ExeFS (Build e0f3ccfa) ──────────────► Descompactado e vinculado ao diretório do Triforce
-         │
-         ├──► Clang Object Cache ──────────────────► 137 arquivos .o reaproveitados em ~/.cache/triforce-build/
-         │
-         ├──► Lifter C + Clang 23.1 ──────────────► 71 arquivos C gerados (108s) e compilados com -march=x86-64-v3 -O1
-         │
-         ├──► Binário Final Linkado ───────────────► /home/marcos/Games/Triforce/bin/triforce (533 MB) + triforce_vk.so (12.2 MB)
-         │
-         └──► Cache de Pipelines Vulkan ───────────► 15.022 pipelines pré-compiladas em triforce_pipelines.bin (380 MB)
-```
-
----
-
-## 3. Telemetria e Monitoramento
-
-### A. MangoHud Nativo do Regata OS
-* **Integração:** Injetado via variável de ambiente `MANGOHUD=1` e wrapper `gamemoderun mangohud` no inicializador [`jogar_triforce.sh`](jogar_triforce.sh).
-* **Métricas Ativas:**
-  - GPU: % uso, clock (`MHz`), temperatura (`°C`)
-  - CPU: % uso, frequência (`MHz`), temperatura (`°C`)
-  - VRAM e RAM em GiB
-  - Motor gráfico (Vulkan) com FPS e Frametime em `ms`
-  - Nome do dispositivo: `AMD Radeon RX 6750 XT`
-  - Gráfico de frametime contínuo (linha verde)
-  - Status do GameMode: `GAMEMODE ON`
-  - Atalho de alternância: `Shift Direito + F12`.
-
-### B. Contador de FPS Nativo do Recompilador
-* **In-Game HUD:** Ativado via `fps_counter=1` no arquivo [`triforce_options.ini`](triforce_options.ini) ou via menu in-game (`F1` / `Insert` -> aba **Display** -> **FPS counter: On**).
-* Exibe os dígitos oficiais do HUD de Ocarina of Time no canto superior direito da tela sem impacto de desempenho.
-
----
-
-## 4. Análise de Upscaling: FSR 3.1 vs. FSR 4
-
-| Tecnologia | Status no Triforce v0.4.0 | Detalhes Técnicos |
+| Versão | Data | Principais Características e Status |
 | :--- | :---: | :--- |
-| **AMD FSR 3.1 (Upscaler)** | **100% Nativo** | Passes de computação SPIR-V compilados diretamente no motor (`vk_fsr3.cpp`), sem dependência de bibliotecas externas. Suporta câmera jitter e reconstrução temporal. |
-| **AMD FSR 3.1 (Frame Gen)** | **Disponível / Experimental** | Presente em `vk_fsr3fi.cpp`. **Atenção:** Apresenta bug conhecido de acúmulo de submissões na fila Vulkan (`queue submit > 30ms`), podendo congelar em 2 FPS no Linux/RADV. Desativado por padrão para estabilidade. |
-| **AMD FSR 4** | **Suportado via Gancho** | Infraestrutura completa programada em `vk_fsr4.cpp`. Aguarda liberação do binário compilado pela AMD (`amd_fidelityfx_upscaler_vk.so`). Sem o binário, o jogo recorre automaticamente ao FSR 3.1. |
-| **Gamescope FSR** | **Ativo e Otimizado** | Flag `-F fsr` executada pelo compositor Gamescope por hardware, realizando o upscale nítido de 1080p para a resolução nativa de 1440p do monitor a 165Hz com latência zero. |
+| **v0.4.0** | 18/11/2026 | Primeiro release unificado pós-fusão NX2navi. Apresentava queda para 20 FPS e engasgos na folhagem devido a quebras de render pass e threads auxiliares ativas. |
+| **v0.5.0** | 18/11/2026 | Occlusion culling ativado por padrão (+3-5% FPS), desativação de *replay helper threads* e *robust buffers*, correção do render pass da grama/folhagem, compressão de texturas BC1 e novo in-game HUD de performance. |
+| **v0.5.2** | 19/11/2026 | **Versão Atual Ativa.** Novo launcher visual imersivo, ferramenta de benchmark automático **"Find my best settings"** (teste de 2 min em 4 áreas), 8 workers paralelos para compilação de shaders em AMD RX 6000, eliminação de black flashes e modo co-op online (Squadala!). |
 
 ---
 
-## 5. Injeção de Ícone Multi-Resolução em X11 (ctypes)
+## 2. Arquitetura e Atualização Incremental (v0.4.0 → v0.5.2)
 
-### O Problema:
-O utilitário padrão `xprop -set _NET_WM_ICON` trunca propriedades que excedam 64 elementos por linha de comando. Como o ícone oficial em alta resolução do Triforce possui centenas de milhares de valores inteiros, o X11 descartava a imagem, deixando a janela e a barra de tarefas do KDE com ícone genérico ou transparente.
+A atualização para a v0.5.2 utilizou o mecanismo `--update` com reutilização total do cache de objetos (`~/.cache/triforce-build/objcache/`), reduzindo o tempo de compilação de **32 minutos** para apenas **2 minutos e 53 segundos**:
 
-### A Solução:
-Desenvolveu-se o script [`set_game_icon.py`](set_game_icon.py) utilizando `ctypes` para comunicação direta com a biblioteca de baixo nível `libX11.so.6`:
-* **Resoluções Injetadas:** 16x16, 24x24, 32x32, 48x48, 64x64, 128x128 e 256x256 em um único vetor contíguo de `CARDINAL` ARGB (com canal alpha real).
-* **Loop de Liveness:** Monitora a criação da janela do Gamescope por até 15 segundos após o disparo, garantindo aplicação confiável mesmo em partidas frias.
-* **Integração KDE:** Arquivos `.desktop` instalados em `~/.local/share/applications/` associando `WM_CLASS="gamescope"` ao logotipo oficial [`triforce.png`](triforce.png).
+```
+[ Atualização Incremental CLI v0.5.2 ]
+         │
+         ├──► RomFS (26.2 GB) ────────────────► 100% Preservado via links originais (0 bytes extras)
+         │
+         ├──► ExeFS (.triforce_exefs) ────────► Inalterado
+         │
+         ├──► Cache de Objetos (objcache) ────► 137 objetos C reutilizados instantaneamente
+         │
+         ├──► Lifter C + Clang ───────────────► Apenas arquivos modificados recompilados (51s)
+         │
+         ├──► Binário Final Linkado ──────────► /home/marcos/Games/Triforce/bin/triforce (509 MB)
+         │
+         └──► Shaders Vulkan ─────────────────► triforce_shaders.bin preservado e revalidado
+```
 
 ---
 
-## 6. Procedimentos de Execução
+## 3. Otimizações Específicas para o Hardware (i5-12400F + RX 6750 XT 12 GB)
 
-### Modo Gamescope Recomendado (1080p FSR / 60Hz):
+1. **Correção de Folhagem e Grama (Fim dos 20 FPS na Floresta):**
+   * As chamadas de geometria para grama e folhas deixaram de interromper o *render pass* do Vulkan, eliminando o gargalo massivo de trocas de estado.
+2. **Desativação das Replay Helper Threads:**
+   * Libera ciclos vitais da CPU (6 núcleos físicos / 12 threads), eliminando engasgos de mais de 40 ms e estabilizando os *1% lows* (+33%) e *0.1% lows* (+70%).
+3. **Occlusion Culling & Compressão BC1:**
+   * Geometria não visível é descartada antes do rasterizador da RX 6750 XT (10–12% menos draw calls).
+   * Texturas opacas em formato BC1 aliviam o barramento PCIe e o consumo de VRAM.
+4. **Shaders Otimizados para AMD RDNA 2 (RX 6000):**
+   * Preparação de shaders distribuída entre 8 workers simultâneos.
+
+---
+
+## 4. Recursos do Novo Launcher Oficial & Benchmark
+
+* **Benchmark "Find my best settings":**
+  * Localizado em **Settings** no novo launcher.
+  * Executa um sobrevoo cinematográfico autônomo de 2 minutos por Hyrule Field, Castle Town Market, Kokiri Forest e Lake Hylia.
+  * Analisa métricas em tempo real e calcula os valores ideais de resolução, upscaling e filtros para a máquina.
+* **Gestão Integrada de Saves:**
+  * Exibe os 6 slots com miniaturas geradas em tempo real a partir dos saves.
+  * Suporta importação e exportação segura com backup automático contra corrupção.
+* **Navegador de Mods GameBanana:**
+  * Permite instalar modificações e pacotes de melhorias gráficas ou de jogabilidade sem sair do ecossistema do jogo.
+
+---
+
+## 5. Como Executar
+
+### 1. Jogo Direto (Modo Gamescope 1080p -> 1440p FSR com MangoHud)
 ```bash
 /home/marcos/Games/Triforce/jogar_triforce.sh
 ```
+*Disponível também pelo atalho na Área de trabalho:* `Zelda: Ocarina of Time (Triforce v0.5.2)`.
 
-### Modo Direto (Sem Gamescope / Janela KDE):
+### 2. Novo Launcher Oficial Triforce (Saves, Mods e Benchmark)
+```bash
+/home/marcos/Games/Triforce/triforce
+```
+*Disponível também pelo atalho na Área de trabalho:* `Triforce Launcher (v0.5.2)`.
+
+### 3. Modo Direto (Sem Gamescope / Janela KDE Plasma)
 ```bash
 /home/marcos/Games/Triforce/jogar_triforce.sh --direct
 ```
-
----
-
-## 7. Próximos Passos & Recomendações
-1. **Monitoramento Upstream do FSR 4:** Acompanhar repositório oficial do Triforce Project para obter a biblioteca `amd_fidelityfx_upscaler_vk.so` assim que disponibilizada para Linux.
-2. **Correção do Frame Generation:** Monitorar releases subsequentes do Triforce que desacoplem o render do HUD do pipeline de interpolação, permitindo ativar o Frame Gen 2x sem gargalo de fila Vulkan.

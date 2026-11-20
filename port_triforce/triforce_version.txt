@@ -1,2 +1,2 @@
-version=v0.4.0
-builder=/home/marcos/Downloads/Triforce-v0.4.0-linux-test-x86_64.AppImage
+version=v0.5.2
+builder=/home/marcos/Downloads/Triforce-v0.5.2-linux-test-x86_64.AppImage
