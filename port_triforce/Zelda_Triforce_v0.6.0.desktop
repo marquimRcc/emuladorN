@@ -8,5 +8,5 @@ Icon=/home/marcos/Games/Triforce/triforce.png
 Path=/home/marcos/Games/Triforce
 Terminal=false
 StartupNotify=true
-StartupWMClass=gamescope
+StartupWMClass=triforce
 Categories=Game;
