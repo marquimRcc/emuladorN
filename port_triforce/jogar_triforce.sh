@@ -1,8 +1,8 @@
 #!/bin/bash
 # ==============================================================================
 # The Legend of Zelda: Ocarina of Time (Switch 2 PC Recomp - Triforce v0.6.0)
-# Inicializador de Alta Performance para Linux (AMD Radeon RX 6750 XT / Mesa RADV ACO)
-# Com AMD FSR 4 Nativo, MangoHud Ativo e Feral GameMode
+# Inicializador FullHD 1080p Otimizado para AMD Radeon RX 6750 XT / Mesa RADV ACO
+# Com Upscale FSR 165Hz no Gamescope e MangoHud Nativo do Regata OS
 # ==============================================================================
 set -e
 
@@ -16,15 +16,15 @@ export SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1
 export RADV_PERFTEST=aco
 export AMD_VULKAN_ICD=RADV
 
-# Resolução: Travar em 1440p Nativo e desativar downscaling dinâmico (Fim do blur/imagem lavada)
+# Resolução de renderização: FullHD 1080p (output_res=3) com proporção 16:9 perfeita
+export HOS_OUTPUT_RES=3
+export HOS_FULLSCREEN=0
 export HOS_FIX_RES=1
-export HOS_FULLSCREEN=1
-export HOS_OUTPUT_RES=4
 
 # Suprimir pop-up de atualização para entrada direta no jogo
 export HOOKSHOT_NO_UPDATE_CHECK=1
 
-# Ativação do MangoHud nativo do Regata OS com métricas de alta visibilidade
+# Configuração de telemetria MangoHud nativo do Regata OS
 export MANGOHUD=1
 export MANGOHUD_CONFIG="cpu_temp,gpu_temp,ram,vram,gpu_core_clock,fps,frametime=1,frame_timing=1,gamemode,font_size=20,position=top-left"
 
@@ -43,39 +43,63 @@ fi
 
 chmod +x "$EXE" 2>/dev/null || true
 
-# Configurar prefixo de execução com GameMode e MangoHud
-LAUNCHER_WRAP=""
+# Configurar GameMode para o processo do jogo
+GAME_WRAP=""
 if command -v gamemoderun >/dev/null 2>&1; then
-    LAUNCHER_WRAP="gamemoderun"
-fi
-if command -v mangohud >/dev/null 2>&1; then
-    LAUNCHER_WRAP="${LAUNCHER_WRAP} mangohud"
+    GAME_WRAP="gamemoderun"
 fi
 
-# Modo Gamescope opcional (apenas se solicitado explicitamente com --gamescope)
-if [ "${1:-}" = "--gamescope" ] || [ "${GAMESCOPE:-0}" = "1" ]; then
-    shift || true
-    if command -v gamescope >/dev/null 2>&1; then
-        echo "Iniciando via Gamescope isolado (1080p -> 1440p)..."
-        if [ -f "$DIR/set_game_icon.py" ]; then
-            (sleep 2 && python3 "$DIR/set_game_icon.py" >/dev/null 2>&1) &
-        fi
-        if [ -n "$LAUNCHER_WRAP" ]; then
-            exec gamescope -W 2560 -H 1440 -w 1920 -h 1080 -r 60 -F fsr --expose-wayland -- $LAUNCHER_WRAP "$EXE" "$@"
-        else
-            exec gamescope -W 2560 -H 1440 -w 1920 -h 1080 -r 60 -F fsr --expose-wayland -- "$EXE" "$@"
-        fi
+# Detectar taxa de atualização do monitor primário (165Hz para o monitor atual)
+REFRESH_RATE=165
+if command -v xrandr >/dev/null 2>&1; then
+    DETECTED_HZ=$(xrandr 2>/dev/null | grep -E "connected primary" -A 1 | grep -oE "[0-9]+\.[0-9]+\*" | tr -d '*' | cut -d'.' -f1 || true)
+    if [ -n "$DETECTED_HZ" ] && [ "$DETECTED_HZ" -ge 60 ]; then
+        REFRESH_RATE="$DETECTED_HZ"
     fi
 fi
 
-# MODO PADRÃO: Direto Nativo Vulkan (Máxima fluidez, latência zero e MangoHud visível)
-if [ "${1:-}" = "--direct" ]; then
-    shift || true
+# Injetar o ícone oficial na janela automaticamente em segundo plano
+if [ -f "$DIR/set_game_icon.py" ]; then
+    (sleep 2 && python3 "$DIR/set_game_icon.py" >/dev/null 2>&1) &
 fi
 
-echo "Iniciando The Legend of Zelda: Ocarina of Time (Triforce v0.6.0 + AMD FSR 4 + MangoHud)..."
-if [ -n "$LAUNCHER_WRAP" ]; then
-    exec $LAUNCHER_WRAP "$EXE" "$@"
-else
-    exec "$EXE" "$@"
+# Modo Direto (sem Gamescope) se passar --direct
+if [ "${1:-}" = "--direct" ] || [ "${DIRECT:-0}" = "1" ]; then
+    shift || true
+    echo "Iniciando em Modo Direto (FullHD 1080p nativo)..."
+    MANGOHUD_CMD=""
+    if command -v mangohud >/dev/null 2>&1; then
+        MANGOHUD_CMD="mangohud"
+    fi
+    if [ -n "$GAME_WRAP" ]; then
+        exec $MANGOHUD_CMD $GAME_WRAP "$EXE" "$@"
+    else
+        exec $MANGOHUD_CMD "$EXE" "$@"
+    fi
 fi
+
+# Modo Padrão: Gamescope FullHD 1080p -> 1440p FSR a 165Hz com MangoHud externo
+if command -v gamescope >/dev/null 2>&1; then
+    echo "Iniciando via Gamescope (FullHD 1080p -> 1440p FSR a ${REFRESH_RATE}Hz com MangoHud)..."
+    
+    MANGOHUD_CMD=""
+    if command -v mangohud >/dev/null 2>&1; then
+        MANGOHUD_CMD="mangohud"
+    fi
+
+    exec $MANGOHUD_CMD gamescope \
+        -W 2560 -H 1440 \
+        -w 1920 -h 1080 \
+        -r "$REFRESH_RATE" \
+        -F fsr \
+        --fsr-sharpness 2 \
+        --force-windows-fullscreen \
+        --expose-wayland \
+        -- $GAME_WRAP "$EXE" "$@"
+fi
+
+# Fallback nativo se Gamescope não estiver instalado
+if [ -n "$GAME_WRAP" ]; then
+    exec $GAME_WRAP "$EXE" "$@"
+fi
+exec "$EXE" "$@"
