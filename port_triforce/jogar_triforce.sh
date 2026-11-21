@@ -22,6 +22,8 @@ export RX_VK_PIECE_BIND_WAIT=1
 export RX_VK_EVENT_LATE=0
 export RX_VK_NO_READBACK_WAIT=1
 export RX_VK_LAZY_WB=1
+export RX_VK_SYNC_CAPTURE=0
+export RX_VK_CAPTURE_BEHIND=1
 
 # Otimizações de CPU e Threads (Elimina Starvation de Vcores no Intel Core i5-12400F)
 export HOS_VCORE_SPIN_US=0
