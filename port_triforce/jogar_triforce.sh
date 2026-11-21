@@ -15,6 +15,13 @@ export SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1
 # Otimizações de renderização para AMD RDNA2 (Radeon RX 6750 XT / Mesa RADV ACO)
 export RADV_PERFTEST=aco
 export AMD_VULKAN_ICD=RADV
+export RADV_DEBUG=nodcc
+
+# Sincronização e Estabilidade de Memória Vulkan (Elimina Deadlock e Queda para 15 FPS)
+export RX_VK_PIECE_BIND_WAIT=1
+export RX_VK_EVENT_LATE=0
+export RX_VK_NO_READBACK_WAIT=1
+export RX_VK_LAZY_WB=1
 
 # Resolução: Travar em FullHD 1080p Nativo e forçar tamanho de janela real (Fim do 720p/blur)
 export HOS_OUTPUT_RES=3
@@ -69,8 +76,11 @@ fi
 
 # MODO PADRÃO: Direto Nativo Vulkan (Sem Gamescope, Sem congelamentos, Alta Qualidade)
 echo "Iniciando The Legend of Zelda: Ocarina of Time (Triforce v0.6.0 - FullHD 1080p Nativo)..."
+LOG_FILE="$DIR/game_live.log"
+echo "=== Sessão iniciada em $(date) ===" >> "$LOG_FILE"
+
 if [ -n "$LAUNCHER_WRAP" ]; then
-    exec $LAUNCHER_WRAP "$EXE" "$@"
+    exec $LAUNCHER_WRAP "$EXE" "$@" 2>&1 | tee -a "$LOG_FILE"
 else
-    exec "$EXE" "$@"
+    exec "$EXE" "$@" 2>&1 | tee -a "$LOG_FILE"
 fi
