@@ -23,6 +23,11 @@ export RX_VK_EVENT_LATE=0
 export RX_VK_NO_READBACK_WAIT=1
 export RX_VK_LAZY_WB=1
 
+# Otimizações de CPU e Threads (Elimina Starvation de Vcores no Intel Core i5-12400F)
+export HOS_VCORE_SPIN_US=0
+export HOS_VCORES=off
+export HOS_PRIO=0
+
 # Resolução: Travar em FullHD 1080p Nativo e forçar tamanho de janela real (Fim do 720p/blur)
 export HOS_OUTPUT_RES=3
 export HOS_WINDOW_SIZE=1920x1080
@@ -32,9 +37,8 @@ export HOS_FIX_RES=1
 # Suprimir pop-up de atualização para entrada direta no jogo
 export HOOKSHOT_NO_UPDATE_CHECK=1
 
-# Ativação do MangoHud nativo do Regata OS com métricas de alta visibilidade
-export MANGOHUD=1
-export MANGOHUD_CONFIG="cpu_temp,gpu_temp,ram,vram,gpu_core_clock,fps,frametime=1,frame_timing=1,gamemode,font_size=20,position=top-left"
+# Modo Vulkan Limpo: sem sobreposição de camadas de terceiros no driver RADV
+export MANGOHUD=0
 
 # Localizar o binário do Triforce
 EXE=""
