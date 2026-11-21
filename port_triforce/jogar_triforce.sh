@@ -16,6 +16,11 @@ export SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1
 export RADV_PERFTEST=aco
 export AMD_VULKAN_ICD=RADV
 
+# Resolução: Travar em 1440p Nativo e desativar downscaling dinâmico (Fim do blur/imagem lavada)
+export HOS_FIX_RES=1
+export HOS_FULLSCREEN=1
+export HOS_OUTPUT_RES=4
+
 # Suprimir pop-up de atualização para entrada direta no jogo
 export HOOKSHOT_NO_UPDATE_CHECK=1
 
