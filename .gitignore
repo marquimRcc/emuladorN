@@ -22,3 +22,7 @@ __pycache__/
 
 # Screenshots pesadas locais (preserva apenas icon.png)
 screenshot_*.png
+
+# Submódulos e builds do FSR 4
+fsr4-vk/
+*.so
