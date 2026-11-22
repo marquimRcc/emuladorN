@@ -22,10 +22,11 @@ Scripts de automação, patches de desempenho (60 FPS), configurações gráfica
 .
 ├── abrir_emulador.sh           # Abre a interface gráfica do emulador Eglantine
 ├── jogar_zelda.sh              # Inicializador otimizado de Zelda (SDL, AMD RADV, Docked)
-├── jogar_mario.sh              # Inicializador otimizado de Super Mario Bros. Wonder (PT-BR, Vulkan ACO)
+├── jogar_mario.sh              # Inicializador otimizado de Super Mario Bros. Wonder (Emulação Eglantine)
 ├── instalar_patches.py         # Injetor automático dos patches de 60 FPS e Resolução Máxima (Zelda)
 ├── mario_wonder_icon.png       # Ícone oficial em alta definição (512x512)
-├── DOCUMENTACAO_TECNICA_SUPER_MARIO_BROS_WONDER.md # Registro técnico completo da implementação Linux
+├── DOCUMENTACAO_TECNICA_SUPER_MARIO_BROS_WONDER.md # Registro técnico completo da implementação emulada (Eglantine)
+├── DOCUMENTACAO_PORT_RECOMPILADO_SUPER_MARIO_BROS_WONDER.md # Documentação do Port Nativo Recompilado (SuperWonders / Layout Xbox)
 ├── config/
 │   ├── 010015100B514000.ini    # Perfil gráfico e de idioma PT-BR (Super Mario Bros. Wonder)
 │   └── 0400486024DEC000.ini    # Configuração gráfica recomendada (Zelda OOT Remake)
@@ -169,6 +170,19 @@ Com a fusão oficial do NX2navi ao projeto Triforce ([triforceproject.com](https
 * **Telemetria Dupla:** MangoHud nativo do Regata OS (GPU/CPU %, temps, frequências, VRAM/RAM, gráfico de frametime) + novo contador in-game integrado com métricas completas de 1% e 0.1% lows.
 * **Otimizações para RDNA 2 (RX 6750 XT):** Occlusion culling nativo (+3-5% FPS), compressão de texturas BC1, 8 workers paralelos para compilação de shaders e correção do gargalo de render pass na vegetação.
 * **Injeção de Ícone:** Utilitário Python ctypes com `libX11.so.6` para suporte a ícones ARGB 32-bit (16x16 até 256x256 com canal alpha real).
+
+---
+
+## 🍄 Super Mario Bros. Wonder - Port Nativo Recompilado (SuperWonders)
+
+Além da emulação via Eglantine/Eden, o repositório agora suporta o **Port Nativo de PC via Recompilação Estática (Static Binary Translation - SuperWonders v0.7.0)**:
+
+* **Documentação Técnica Completa:** [DOCUMENTACAO_PORT_RECOMPILADO_SUPER_MARIO_BROS_WONDER.md](DOCUMENTACAO_PORT_RECOMPILADO_SUPER_MARIO_BROS_WONDER.md)
+* **Local de Instalação e Execução:** `/home/marcos/Games/SuperWonders_Recomp/jogar_superwonders_recomp.sh`
+* **Desempenho Nativo:** 60.0 FPS cravados via Vulkan (Mesa RADV ACO) com frametime entre **0.54 ms e 2.2 ms** (tempo de resposta instantâneo).
+* **Layout Visual de Controle Xbox:** Prompts de botões dinâmicos com as cores oficiais do controle do Xbox (A verde, B vermelho, X azul, Y amarelo).
+* **Localização 100% PT-BR:** Interface, legendas e dublagem oficial das Flores Falantes em Português do Brasil.
+* **Atalho no Sistema:** Lançador na Área de Trabalho e no Menu de Jogos (`Super Mario Bros. Wonder (Port Nativo PC)`).
 
 ---
 
