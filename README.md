@@ -4,13 +4,15 @@ Scripts de automação, patches de desempenho (60 FPS), configurações gráfica
 
 ---
 
-## 🎮 Informações do Jogo e Emulador
+## 🎮 Informações dos Jogos e Emulador
 
-- **Jogo**: The Legend of Zelda: Ocarina of Time (Nintendo Switch 2)
-- **Title ID**: `0400486024DEC000`
-- **Build ID (main)**: `E0F3CCFAF50065AE4EA01EB5AEB13B1A45DA3348`
-- **Emulador**: Eglantine v0.1.0-rc3 PGO (fork de Eden/Yuzu com suporte à API gráfica NVN2 e shaders Ampere)
-- **Driver Gráfico Testado**: Vulkan (Mesa RADV 26.x em AMD Radeon RX 6700/6750 XT / Windows Adrenalin)
+- **Jogos Suportados**:
+  - **The Legend of Zelda: Ocarina of Time (Nintendo Switch 2 Remake)**
+    - Title ID: `0400486024DEC000` | Build ID: `E0F3CCFAF50065AE4EA01EB5AEB13B1A45DA3348`
+  - **Super Mario Bros. Wonder (Nintendo Switch / Switch 2 Edition)**
+    - Title ID: `010015100B514000` | Localização: **PT-BR Oficial (Vozes e Textos)**
+- **Emulador**: Eglantine v0.1.0-rc3 PGO (fork de Eden/Yuzu com suporte à API gráfica NVN2 e formato .nup)
+- **Driver Gráfico Testado**: Vulkan (Mesa RADV 26.x ACO em AMD Radeon RX 6750 XT / Windows Adrenalin)
 
 ---
 
@@ -19,10 +21,14 @@ Scripts de automação, patches de desempenho (60 FPS), configurações gráfica
 ```text
 .
 ├── abrir_emulador.sh           # Abre a interface gráfica do emulador Eglantine
-├── jogar_zelda.sh              # Inicializador otimizado para Linux (SDL, AMD RADV, Docked)
-├── instalar_patches.py         # Injetor automático dos patches de 60 FPS e Resolução Máxima
+├── jogar_zelda.sh              # Inicializador otimizado de Zelda (SDL, AMD RADV, Docked)
+├── jogar_mario.sh              # Inicializador otimizado de Super Mario Bros. Wonder (PT-BR, Vulkan ACO)
+├── instalar_patches.py         # Injetor automático dos patches de 60 FPS e Resolução Máxima (Zelda)
+├── mario_wonder_icon.png       # Ícone oficial em alta definição (512x512)
+├── DOCUMENTACAO_TECNICA_SUPER_MARIO_BROS_WONDER.md # Registro técnico completo da implementação Linux
 ├── config/
-│   └── 0400486024DEC000.ini    # Configuração gráfica recomendada (fix de bloom, shaders assíncronos)
+│   ├── 010015100B514000.ini    # Perfil gráfico e de idioma PT-BR (Super Mario Bros. Wonder)
+│   └── 0400486024DEC000.ini    # Configuração gráfica recomendada (Zelda OOT Remake)
 ├── port_navi/                  # Port nativo estático Linux (NX2navi v0.10.1 - V2 1440p QHD / FSR)
 │   ├── DOCUMENTACAO_TECNICA_PORT_NAVI_V2.md # Registro completo do port Linux, benchmarks e correções
 │   ├── nx2navi.ini             # Configuração otimizada Linux (FSR 1, Async Replay, Low-End GPU)
@@ -88,11 +94,21 @@ python3 instalar_patches.py
 ```
 
 ### 4. Jogar
-Inicie o jogo diretamente com o script com suporte a controles SDL (8BitDo / Xbox) e perfil de performance:
-```bash
-chmod +x jogar_zelda.sh
-./jogar_zelda.sh
-```
+
+- **Para iniciar The Legend of Zelda: Ocarina of Time**:
+  ```bash
+  chmod +x jogar_zelda.sh
+  ./jogar_zelda.sh
+  ```
+
+- **Para iniciar Super Mario Bros. Wonder (100% em PT-BR)**:
+  ```bash
+  chmod +x jogar_mario.sh
+  ./jogar_mario.sh
+  ```
+  *Ou use o atalho criado na Área de Trabalho: `Super_Mario_Bros_Wonder.desktop`.*
+
+Consulte [DOCUMENTACAO_TECNICA_SUPER_MARIO_BROS_WONDER.md](./DOCUMENTACAO_TECNICA_SUPER_MARIO_BROS_WONDER.md) para todos os detalhes técnicos da calibração gráfica, driver RADV ACO e localização PT-BR.
 
 ---
 
