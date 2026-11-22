@@ -55,12 +55,20 @@ vsync=1
 upscaler=1
 fsr_sharpness=25
 
-# Layout visual de botões de controle:
-# 0 = Nintendo Switch
-# 1 = Xbox (A verde, B vermelho, X azul, Y amarelo)
-# 2 = PlayStation / DualSense
+# Layout de botões de controle:
+# controller_preset=0 -> Xbox / DualSense: "A: bottom (A / Cross) | B: right (B / Circle)"
+#   - Pressionar 'A' físico do Xbox (botão inferior) executa Selecionar/Pular
+#   - Pressionar 'B' físico do Xbox (botão direito) executa Voltar/Correr
+# controller_preset=1 -> Nintendo Switch: "A on the right (B do Xbox) | B on the bottom (A do Xbox)"
+controller_preset=0
 button_icons=1
-controller_preset=1
+
+# Mapeamento direto de botões para controle Xbox (Pad 1):
+controller_0=0   # Ação A -> Botão A físico (inferior)
+controller_1=1   # Ação B -> Botão B físico (direito)
+controller_2=2   # Ação X -> Botão X físico (esquerdo)
+controller_3=3   # Ação Y -> Botão Y físico (superior)
+pad_preset_1=0   # Preset do Jogador 1 no padrão Xbox
 
 # Tabela interna de idiomas do SuperWonders:
 # 0: en-US | 1: it | 2: de | 3: fr | 4: pt-BR | 5: es | 6: ko | 7: ja | 8: nl | 9: ru | 10: zh-Hans | 11: zh-Hant
