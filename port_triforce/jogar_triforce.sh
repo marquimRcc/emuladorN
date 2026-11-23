@@ -9,6 +9,10 @@ set -e
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DIR"
 
+# Display e Sessão Gráfica
+export DISPLAY="${DISPLAY:-:0}"
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+
 # Controles: garantir captura contínua de eventos de gamepad SDL
 export SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1
 
