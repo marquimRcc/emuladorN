@@ -11,13 +11,17 @@ cd "$DIR"
 
 # Controles: garantir captura contínua de eventos de gamepad SDL
 export SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1
+export HOS_INPUT_BACKGROUND=1
 
 # Otimizações de renderização para AMD RDNA2 (Radeon RX 6750 XT / Mesa RADV ACO)
 export RADV_PERFTEST=aco
 export AMD_VULKAN_ICD=RADV
 export RADV_DEBUG=nodcc
 
-# Controle de Clock e Performance de GPU (Impede GPU de dormir a 498 MHz)
+# Controle de Clock e Performance de GPU (Forçar clock alto sem permissão root)
+if [ -w /sys/class/drm/card0/device/power_dpm_force_performance_level ]; then
+    echo "high" > /sys/class/drm/card0/device/power_dpm_force_performance_level 2>/dev/null || true
+fi
 export RX_VK_GPU_CLOCK=peak
 
 # Inicialização Instantânea e Eliminação de Tela Preta (Bypass do loop de 13 min de predição)
@@ -116,7 +120,7 @@ echo "=== Sessão iniciada em $(date) ===" >> "$LOG_FILE"
 ) &
 WATCHDOG_PID=$!
 
-trap 'kill $WATCHDOG_PID 2>/dev/null || true' EXIT
+trap 'kill $WATCHDOG_PID 2>/dev/null || true; echo auto > /sys/class/drm/card0/device/power_dpm_force_performance_level 2>/dev/null || true' EXIT
 
 if [ -n "$LAUNCHER_WRAP" ]; then
     $LAUNCHER_WRAP "$EXE" "$@" 2>&1 | tee -a "$LOG_FILE"
@@ -124,4 +128,5 @@ else
     "$EXE" "$@" 2>&1 | tee -a "$LOG_FILE"
 fi
 
+echo auto > /sys/class/drm/card0/device/power_dpm_force_performance_level 2>/dev/null || true
 kill $WATCHDOG_PID 2>/dev/null || true
