@@ -17,7 +17,12 @@ export RADV_PERFTEST=aco
 export AMD_VULKAN_ICD=RADV
 export RADV_DEBUG=nodcc
 
-# Sincronização e Estabilidade de Memória Vulkan (Elimina Deadlock e Queda para 15 FPS)
+# Sincronização e Estabilidade de Memória Vulkan (Elimina Deadlock, Hangs de GPU e Queda de FPS)
+export RX_VK_MIRROR_PIECES=0
+export RX_VK_HOLD_MS=0
+export RX_VK_FIFO=1
+export HOS_FPS_MAX=60
+export HOS_FPS_TARGET=60
 export RX_VK_PIECE_BIND_WAIT=1
 export RX_VK_EVENT_LATE=0
 export RX_VK_NO_READBACK_WAIT=1
