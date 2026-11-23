@@ -16,7 +16,6 @@ export HOS_INPUT_BACKGROUND=1
 # Otimizações de renderização para AMD RDNA2 (Radeon RX 6750 XT / Mesa RADV ACO)
 export RADV_PERFTEST=aco
 export AMD_VULKAN_ICD=RADV
-export RADV_DEBUG=nodcc
 
 # Controle de Clock e Performance de GPU (Forçar clock alto sem permissão root)
 if [ -w /sys/class/drm/card0/device/power_dpm_force_performance_level ]; then
@@ -27,8 +26,9 @@ export RX_VK_GPU_CLOCK=peak
 # Inicialização Instantânea e Eliminação de Tela Preta (Bypass do loop de 13 min de predição)
 export RX_VK_PREDICT_S=0
 
-# Desativação do Filtro Retrô CRT (Elimina distorção marrom/sawtooth)
+# Desativação de Filtros e Módulos Experimentais (Cenário 3D Limpo em SDR)
 export RX_VK_N64=0
+export RX_VK_RENODX=0
 
 # Sincronização e Estabilidade Vulkan / Pacing de Vídeo a 60 FPS
 export RX_VK_MIRROR_PIECES=0
@@ -42,6 +42,8 @@ export HOS_FPS_MAX=60
 export HOS_FPS_TARGET=60
 export RX_VK_SYNC_CAPTURE=0
 export RX_VK_CAPTURE_BEHIND=1
+export RX_VK_NO_READBACK_WAIT=1
+export RX_VK_LAZY_WB=1
 
 # Otimizações de CPU e Threads (Elimina Starvation de Vcores no Intel Core i5-12400F)
 export HOS_VCORE_SPIN_US=0
