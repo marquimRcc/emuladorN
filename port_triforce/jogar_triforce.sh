@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==============================================================================
-# The Legend of Zelda: Ocarina of Time (Switch 2 PC Recomp - Triforce v0.6.0)
+# The Legend of Zelda: Ocarina of Time (Switch 2 PC Recomp - Triforce v0.7.1)
 # Inicializador Direto Nativo FullHD 1080p para AMD Radeon RX 6750 XT (Mesa RADV ACO)
 # Máxima Qualidade Gráfica, Latência Zero, Sem Gamescope (Estabilidade Total)
 # ==============================================================================
@@ -17,12 +17,22 @@ export RADV_PERFTEST=aco
 export AMD_VULKAN_ICD=RADV
 export RADV_DEBUG=nodcc
 
-# Sincronização e Estabilidade de Memória Vulkan (Elimina Deadlock, Hangs de GPU e Queda de FPS)
+# Controle de Clock e Performance de GPU (Impede GPU de dormir a 498 MHz)
+export RX_VK_GPU_CLOCK=peak
+
+# Inicialização Instantânea e Eliminação de Tela Preta (Bypass do loop de 13 min de predição)
+export RX_VK_PREDICT_S=0
+
+# Desativação do Filtro Retrô CRT (Elimina distorção marrom/sawtooth)
+export RX_VK_N64=0
+
+# Sincronização e Estabilidade Vulkan / Pacing de Vídeo a 60 FPS
 export RX_VK_MIRROR_PIECES=0
 export RX_VK_HOLD_MS=0
 export RX_VK_FIFO=1
 export RX_VK_MOVIE_UPSCALE=linear
 export HOS_MOVIE_PACE=0
+export HOS_VIDEO_NO_CATCHUP=1
 export HOS_SHORT_SLEEP_TIMER=1
 export HOS_FPS_MAX=60
 export HOS_FPS_TARGET=60
@@ -43,8 +53,9 @@ export HOS_FIX_RES=1
 # Suprimir pop-up de atualização para entrada direta no jogo
 export HOOKSHOT_NO_UPDATE_CHECK=1
 
-# Modo Vulkan Limpo: sem sobreposição de camadas de terceiros no driver RADV
-export MANGOHUD=0
+# Telemetria MangoHud estabilizada a 60 FPS
+export MANGOHUD=1
+export MANGOHUD_CONFIG="fps_limit=60,cpu_temp,gpu_temp,ram,vram,gpu_core_clock,fps,frametime=1,frame_timing=1,gamemode,font_size=18,position=top-left"
 
 # Localizar o binário do Triforce
 EXE=""
