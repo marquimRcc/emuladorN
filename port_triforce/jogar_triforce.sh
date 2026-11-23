@@ -28,6 +28,12 @@ export RX_VK_NO_READBACK_WAIT=1
 export RX_VK_LAZY_WB=1
 export RX_VK_SYNC_CAPTURE=0
 export RX_VK_CAPTURE_BEHIND=1
+export RX_VK_FIFO=1
+export RX_VK_HOLD_MS=0
+
+# Pacing e Trava de 60 FPS (Fim do Judder / 200 FPS descompassado)
+export HOS_FPS_MAX=60
+export HOS_FPS_TARGET=60
 
 # Otimizações de CPU e Threads (Elimina Starvation de Vcores no Intel Core i5-12400F)
 export HOS_VCORE_SPIN_US=0
@@ -43,8 +49,9 @@ export HOS_FIX_RES=1
 # Suprimir pop-up de atualização para entrada direta no jogo
 export HOOKSHOT_NO_UPDATE_CHECK=1
 
-# Modo Vulkan Limpo: sem sobreposição de camadas de terceiros no driver RADV
-export MANGOHUD=0
+# Sincronização e Limitador Estável a 60 FPS com MangoHud
+export MANGOHUD=1
+export MANGOHUD_CONFIG="fps_limit=60,cpu_temp,gpu_temp,ram,vram,gpu_core_clock,fps,frametime=1,frame_timing=1,gamemode,font_size=20,position=top-left"
 
 # Localizar o binário do Triforce
 EXE=""
