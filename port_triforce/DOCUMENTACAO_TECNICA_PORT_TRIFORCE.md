@@ -1,8 +1,8 @@
-# Documentação Técnica: Port Triforce v0.6.0 + AMD FSR 4 (Linux Nativo)
+# Documentação Técnica: Port Triforce v0.7.0 (Linux Nativo)
 **Projeto:** The Legend of Zelda: Ocarina of Time (Switch 2 → PC Linux Nativo)  
 **Ambiente de Execução:** Regata OS (openSUSE based / KDE Plasma / X11 / Mesa RADV ACO), Intel Core i5-12400F (6C/12T), AMD Radeon RX 6750 XT (12 GB VRAM / Navi 22 / RDNA 2)  
-**Data da Atualização:** 21 de Novembro de 2026  
-**Status:** Atualizado para **Triforce v0.6.0 ("Sage Of Power")** com integração de **AMD FSR 4 Nativo** via `fsr4-vk`. Compilação antecipada de 100% dos shaders (14.917 pipelines precompilados) e launcher direto com MangoHud ativo.
+**Data da Atualização:** 23 de Novembro de 2026  
+**Status:** Atualizado para **Triforce v0.7.0 ("Sage Of Courage")**. Correção definitiva de crash de memória em transições e movimento (eliminação de write-backs inválidos em memória excluída), PGO ativo (-6 a 8% de carga de render), Zstd nativo de PC, otimizações RADV ACO, áudio ambiental restaurado, 25 conquistas nativas e compilação antecipada de 100% dos shaders.
 
 ---
 
@@ -13,7 +13,8 @@
 | **v0.4.0** | 18/11/2026 | Primeiro release unificado pós-fusão NX2navi. Apresentava queda para 20 FPS e engasgos na folhagem devido a quebras de render pass e threads auxiliares ativas. |
 | **v0.5.0** | 18/11/2026 | Occlusion culling ativado por padrão (+3-5% FPS), desativação de *replay helper threads* e *robust buffers*, correção do render pass da grama/folhagem, compressão de texturas BC1 e novo in-game HUD de performance. |
 | **v0.5.2** | 19/11/2026 | Novo launcher visual imersivo, ferramenta de benchmark automático **"Find my best settings"**, 8 workers paralelos para compilação de shaders em AMD RX 6000, eliminação de black flashes e modo co-op online. |
-| **v0.6.0** | 21/11/2026 | **Versão Atual Ativa ("Sage Of Power").** Suporte integrado ao **AMD FSR 4** e **Frame Generation** no Linux, translação SPIR-V nativa, 12 workers de compilação assíncrona, eliminação de micro-stutters via modo Direto Vulkan e telemetria nativa com MangoHud. |
+| **v0.6.0** | 21/11/2026 | Suporte inicial experimental ao **AMD FSR 4** e **Frame Generation** no Linux, translação SPIR-V nativa, 12 workers de compilação assíncrona, eliminação de micro-stutters via modo Direto Vulkan. Identificada instabilidade de escrita de memória em certas transições. |
+| **v0.7.0** | 23/11/2026 | **Versão Atual Ativa ("Sage Of Courage").** Correção arquitetural do bug de memória da v0.6.0 (write-backs não tocam mais memória excluída), PGO ativo (redução de 6-8% no workload do renderizador), descompressor Zstd nativo x86_64, drivers RADV ACO otimizados para mesh shaders, restauração de áudio ambiental 3D (reverb/delay), 25 conquistas nativas e execução nativa Vulkan 1080p/1440p sem sobrecarga de tensores. |
 
 ---
 
@@ -74,11 +75,11 @@ export MANGOHUD_CONFIG="cpu_temp,gpu_temp,ram,vram,gpu_core_clock,fps,frametime=
 ## 5. Atalhos e Ferramentas
 
 1. **Jogo Direto (Modo Nativo Vulkan + MangoHud):**
-   * Atalho na Área de Trabalho: `Zelda: Ocarina of Time (Triforce v0.6.0 + FSR 4)`
+   * Atalho na Área de Trabalho: `Zelda: Ocarina of Time (Triforce v0.7.0)`
    * Comando de terminal: `/home/marcos/Games/Triforce/jogar_triforce.sh`
-2. **Painel de Controle e Status FSR 4:**
+2. **Painel de Controle e Status FSR 4 / Shaders:**
    * Script Python: `python3 /home/marcos/Documentos/emulador/port_triforce/monitor_fsr4.py`
-   * Exibe status de compilação, checklist de 7 etapas, tail dos logs e botões de inicialização rápida.
+   * Exibe status de compilação, checklist, tail dos logs e botões de inicialização rápida.
 3. **Launcher de Configurações e Saves:**
-   * Atalho na Área de Trabalho: `Triforce Launcher (v0.6.0)`
+   * Atalho na Área de Trabalho: `Triforce Launcher`
    * Executável: `/home/marcos/Games/Triforce/triforce`

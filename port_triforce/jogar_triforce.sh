@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==============================================================================
-# The Legend of Zelda: Ocarina of Time (Switch 2 PC Recomp - Triforce v0.6.0)
+# The Legend of Zelda: Ocarina of Time (Switch 2 PC Recomp - Triforce v0.7.0)
 # Inicializador Direto Nativo FullHD 1080p para AMD Radeon RX 6750 XT (Mesa RADV ACO)
 # Máxima Qualidade Gráfica, Latência Zero, Sem Gamescope (Estabilidade Total)
 # ==============================================================================
@@ -81,7 +81,7 @@ if [ "${1:-}" = "--gamescope" ]; then
 fi
 
 # MODO PADRÃO: Direto Nativo Vulkan (Sem Gamescope, Sem congelamentos, Alta Qualidade)
-echo "Iniciando The Legend of Zelda: Ocarina of Time (Triforce v0.6.0 - FullHD 1080p Nativo)..."
+echo "Iniciando The Legend of Zelda: Ocarina of Time (Triforce v0.7.0 - FullHD 1080p Nativo)..."
 LOG_FILE="$DIR/game_live.log"
 echo "=== Sessão iniciada em $(date) ===" >> "$LOG_FILE"
 
