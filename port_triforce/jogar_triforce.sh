@@ -21,12 +21,11 @@ export RADV_DEBUG=nodcc
 export RX_VK_MIRROR_PIECES=0
 export RX_VK_HOLD_MS=0
 export RX_VK_FIFO=1
+export RX_VK_MOVIE_UPSCALE=linear
+export HOS_MOVIE_PACE=0
+export HOS_SHORT_SLEEP_TIMER=1
 export HOS_FPS_MAX=60
 export HOS_FPS_TARGET=60
-export RX_VK_PIECE_BIND_WAIT=1
-export RX_VK_EVENT_LATE=0
-export RX_VK_NO_READBACK_WAIT=1
-export RX_VK_LAZY_WB=1
 export RX_VK_SYNC_CAPTURE=0
 export RX_VK_CAPTURE_BEHIND=1
 
@@ -86,7 +85,7 @@ if [ "${1:-}" = "--gamescope" ]; then
 fi
 
 # MODO PADRÃO: Direto Nativo Vulkan (Sem Gamescope, Sem congelamentos, Alta Qualidade)
-echo "Iniciando The Legend of Zelda: Ocarina of Time (Triforce v0.6.0 - FullHD 1080p Nativo)..."
+echo "Iniciando The Legend of Zelda: Ocarina of Time (Triforce v0.7.1 - FullHD 1080p Nativo)..."
 LOG_FILE="$DIR/game_live.log"
 echo "=== Sessão iniciada em $(date) ===" >> "$LOG_FILE"
 
